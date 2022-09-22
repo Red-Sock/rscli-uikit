@@ -148,6 +148,21 @@ func (tb *TextBox) drawContent() {
 
 		text = text[1:]
 	}
+
+	filledCells := len(tb.rText)
+	for filledCells < tb.GetScreenSpace() {
+		if cursorX+1 > tb.X+tb.W {
+			cursorX = tb.X + 1
+			cursorY++
+		} else {
+			cursorX += 1
+		}
+
+		if cursorY > tb.Y+tb.H {
+			break
+		}
+		termbox.SetCell(cursorX, cursorY, ' ', tb.fg, tb.bg)
+	}
 }
 
 func (tb *TextBox) drawCursor() {
