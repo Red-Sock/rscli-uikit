@@ -3,3 +3,6 @@ config/local
 
 # Demo
 demo
+
+# IDE
+.idea
