@@ -13,7 +13,9 @@ func main() {
 	}
 	defer termbox.Close()
 
-	sc := textbox.NewTextBox()
+	sc := textbox.NewTextBox(
+		textbox.NewAttributeSideSymbols('-', '-', '-', '-', '=', '-'),
+	)
 
 	sc.Y = 2
 	sc.X = 3
@@ -21,10 +23,6 @@ func main() {
 	sc.W, sc.H = 20, 1
 	q := make(chan struct{})
 	rscliuitkit.NewHandler(sc).Start(q)
-
-	//redraw_all()
-
-	//eventLoop()
 }
 
 //func eventLoop() {
