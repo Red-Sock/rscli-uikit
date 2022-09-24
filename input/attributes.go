@@ -1,4 +1,4 @@
-package textbox
+package input
 
 import "github.com/nsf/termbox-go"
 

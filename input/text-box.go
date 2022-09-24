@@ -1,4 +1,4 @@
-package textbox
+package input
 
 import (
 	"github.com/Red-Sock/rscli-uikit"

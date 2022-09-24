@@ -1,9 +1,8 @@
-package multiselectbox
+package selectone
 
 import (
 	"errors"
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
-	"github.com/Red-Sock/rscli-uikit/internal/common"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
 )
@@ -21,24 +20,19 @@ type MultiSelectBox struct {
 	items         []string
 	itemSeparator rune
 
-	submitText string
-
-	checkedIdx []int
-	cursorPos  int
+	cursorPos int
 
 	x, y int
 
 	defaultBG, defaultFG, // default item background and foreground
 	cursorBG, cursorFG, // currently selected with cursor item
-	checkedBG, checkedFG, // marked item, in case of multiselect
-	headerBG, headerFG,
-	submitBG, submitFG termbox.Attribute
+	headerBG, headerFG termbox.Attribute
 
-	callback func(args []string) rscliuitkit.Screen
+	callback func(args string) rscliuitkit.Screen
 }
 
 func New(
-	callback func(args []string) rscliuitkit.Screen,
+	callback func(args string) rscliuitkit.Screen,
 	atrs ...Attribute) (*MultiSelectBox, error) {
 
 	sb := &MultiSelectBox{
@@ -53,12 +47,6 @@ func New(
 		defaultFG: termbox.ColorDefault,
 		defaultBG: termbox.ColorDefault,
 
-		checkedFG: termbox.ColorGreen,
-		checkedBG: termbox.ColorGreen,
-
-		submitFG: termbox.ColorDefault,
-		submitBG: termbox.ColorDefault,
-
 		itemSeparator: defaultSeparator,
 	}
 
@@ -68,10 +56,6 @@ func New(
 
 	if len(sb.items) == 0 {
 		return nil, ErrNoItems
-	}
-
-	if sb.submitText == "" {
-		sb.submitText = "submit"
 	}
 
 	return sb, nil
@@ -91,8 +75,6 @@ func (s *MultiSelectBox) Render() {
 		s.renderItem(s.items[idx], cursorX, cursorY, fg, bg)
 		cursorY++
 	}
-
-	s.renderSubmitButton(cursorX, cursorY)
 }
 
 func (s *MultiSelectBox) Process(e termbox.Event) rscliuitkit.Screen {
@@ -106,18 +88,9 @@ func (s *MultiSelectBox) Process(e termbox.Event) rscliuitkit.Screen {
 			s.cursorPos++
 		}
 	case termbox.KeyEnter:
-		if s.cursorPos == len(s.items) {
-			args := make([]string, 0, len(s.checkedIdx))
-			for _, i := range s.checkedIdx {
-				args = append(args, s.items[i])
-			}
-			return s.callback(args)
-		}
-		if !common.Contains(s.checkedIdx, s.cursorPos) {
-			s.checkedIdx = append(s.checkedIdx, s.cursorPos)
-		} else {
-			s.checkedIdx = common.RemoveItemFromSlice(s.checkedIdx, s.cursorPos)
-		}
+
+		return s.callback(s.items[s.cursorPos])
+
 	default:
 	}
 	return s
@@ -132,30 +105,11 @@ func (s *MultiSelectBox) renderItem(text string, x, y int, fg, bg termbox.Attrib
 	}
 }
 
-func (s *MultiSelectBox) renderSubmitButton(cursorX, cursorY int) {
-	var fg, bg termbox.Attribute
-
-	if s.cursorPos == len(s.items) {
-		fg = s.cursorFG
-		bg = s.cursorBG
-	} else {
-		fg = s.submitFG
-		bg = s.submitBG
-	}
-
-	for _, r := range s.submitText {
-		termbox.SetCell(cursorX, cursorY, r, fg, bg)
-		cursorX += runewidth.RuneWidth(r)
-	}
-}
-
 func (s *MultiSelectBox) getColors(idx int) (termbox.Attribute, termbox.Attribute) {
 	var fg, bg termbox.Attribute
 	switch {
 	case idx == s.cursorPos:
 		fg, bg = s.cursorFG, s.cursorBG
-	case common.Contains(s.checkedIdx, idx):
-		fg, bg = s.checkedFG, s.checkedBG
 	default:
 		fg, bg = s.defaultFG, s.defaultBG
 	}
