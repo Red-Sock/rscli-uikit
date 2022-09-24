@@ -5,6 +5,16 @@ import (
 	"strings"
 )
 
+type ColorSurface int
+
+const (
+	ColorSurfaceDefault ColorSurface = iota
+	ColorSurfaceUnderCursor
+	ColorSurfaceChecked
+	ColorSurfaceHeader
+	ColorSurfaceSubmit
+)
+
 type Attribute func(sb *MultiSelectBox)
 
 func HeaderAttribute(header string) Attribute {
@@ -34,14 +44,36 @@ func CoordinatesAttribute(x, y int) Attribute {
 	}
 }
 
-func ColorBGAttribute(bg termbox.Attribute) Attribute {
+func ColorBGAttribute(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
 	return func(sb *MultiSelectBox) {
-		sb.defaultBG = bg
+		switch type_ {
+		case ColorSurfaceDefault:
+			sb.defaultFG = fg
+			sb.defaultBG = bg
+		case ColorSurfaceUnderCursor:
+			sb.cursorFG = fg
+			sb.cursorBG = bg
+		case ColorSurfaceChecked:
+			sb.checkedFG = fg
+			sb.checkedBG = bg
+		case ColorSurfaceHeader:
+			sb.headerFG = fg
+			sb.headerBG = bg
+		case ColorSurfaceSubmit:
+			sb.submitFG = fg
+			sb.submitBG = bg
+		}
 	}
 }
 
-func PointerAttribute(r rune) Attribute {
+func SeparatorSymbolAttribute(r rune) Attribute {
 	return func(sb *MultiSelectBox) {
 		sb.itemSeparator = r
+	}
+}
+
+func SubmitTextAttribute(text string) Attribute {
+	return func(sb *MultiSelectBox) {
+		sb.submitText = text
 	}
 }
