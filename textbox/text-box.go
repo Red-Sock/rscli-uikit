@@ -2,7 +2,7 @@ package textbox
 
 import (
 	"github.com/Red-Sock/rscli-uikit"
-	"github.com/Red-Sock/rscli-uikit/common"
+	"github.com/Red-Sock/rscli-uikit/internal/common"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
 )

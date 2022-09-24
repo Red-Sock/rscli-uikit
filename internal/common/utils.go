@@ -21,3 +21,22 @@ func RemoveFromSlice[T comparable](slice []T, idx int) []T {
 	}
 	return out
 }
+
+func RemoveItemFromSlice[T comparable](items []T, item T) []T {
+	for idx, is := range items {
+		if is == item {
+			return RemoveFromSlice(items, idx)
+		}
+	}
+	return items
+}
+
+func Contains[T comparable](items []T, item T) bool {
+	for _, si := range items {
+		if si == item {
+			return true
+		}
+	}
+
+	return false
+}
