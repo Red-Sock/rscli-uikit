@@ -2,8 +2,8 @@ package main
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
+	"github.com/Red-Sock/rscli-uikit/label"
 	"github.com/Red-Sock/rscli-uikit/selectone"
-	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
 )
 
@@ -15,7 +15,7 @@ func main() {
 	defer termbox.Close()
 
 	f := func(text string) rscliuitkit.Screen {
-		return &testScreen{text: text}
+		return label.New(text)
 	}
 
 	sc, _ := selectone.New(
@@ -26,23 +26,4 @@ func main() {
 
 	q := make(chan struct{})
 	rscliuitkit.NewHandler(sc).Start(q)
-}
-
-type testScreen struct {
-	text string
-
-	x, y   int
-	fg, bg termbox.Attribute
-}
-
-func (t *testScreen) Render() {
-	x := t.x
-	for _, c := range t.text {
-		termbox.SetCell(x, t.y, c, t.fg, t.bg)
-		x += runewidth.RuneWidth(c)
-	}
-}
-
-func (t *testScreen) Process(e termbox.Event) rscliuitkit.Screen {
-	return nil
 }
