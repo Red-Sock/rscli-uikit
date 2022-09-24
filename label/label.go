@@ -13,7 +13,7 @@ type Label struct {
 	fg, bg termbox.Attribute
 }
 
-func New(text string, attrs ...Attribute) rscliuitkit.Screen {
+func New(text string, attrs ...Attribute) rscliuitkit.UIElement {
 	l := &Label{}
 
 	for _, a := range attrs {
@@ -31,6 +31,6 @@ func (t *Label) Render() {
 	}
 }
 
-func (t *Label) Process(e termbox.Event) rscliuitkit.Screen {
+func (t *Label) Process(e termbox.Event) rscliuitkit.UIElement {
 	return nil
 }

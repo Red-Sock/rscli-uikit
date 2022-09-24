@@ -14,7 +14,7 @@ func main() {
 	}
 	defer termbox.Close()
 
-	f := func(text string) rscliuitkit.Screen {
+	f := func(text string) rscliuitkit.UIElement {
 		return label.New(text)
 	}
 

@@ -48,7 +48,7 @@ func (tb *TextBox) Render() {
 	tb.drawCursor()
 }
 
-func (tb *TextBox) Process(e termbox.Event) rscliuitkit.Screen {
+func (tb *TextBox) Process(e termbox.Event) rscliuitkit.UIElement {
 	switch e.Key {
 	case termbox.KeyEsc:
 		return nil
