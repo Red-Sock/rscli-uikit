@@ -1,4 +1,4 @@
-package multiselectbox
+package selectone
 
 import (
 	"github.com/nsf/termbox-go"
@@ -10,9 +10,7 @@ type ColorSurface int
 const (
 	ColorSurfaceDefault ColorSurface = iota
 	ColorSurfaceUnderCursor
-	ColorSurfaceChecked
 	ColorSurfaceHeader
-	ColorSurfaceSubmit
 )
 
 type Attribute func(sb *MultiSelectBox)
@@ -53,15 +51,9 @@ func ColorBGAttribute(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
 		case ColorSurfaceUnderCursor:
 			sb.cursorFG = fg
 			sb.cursorBG = bg
-		case ColorSurfaceChecked:
-			sb.checkedFG = fg
-			sb.checkedBG = bg
 		case ColorSurfaceHeader:
 			sb.headerFG = fg
 			sb.headerBG = bg
-		case ColorSurfaceSubmit:
-			sb.submitFG = fg
-			sb.submitBG = bg
 		}
 	}
 }
@@ -69,11 +61,5 @@ func ColorBGAttribute(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
 func SeparatorSymbolAttribute(r rune) Attribute {
 	return func(sb *MultiSelectBox) {
 		sb.itemSeparator = r
-	}
-}
-
-func SubmitTextAttribute(text string) Attribute {
-	return func(sb *MultiSelectBox) {
-		sb.submitText = text
 	}
 }
