@@ -9,9 +9,9 @@ type Handler interface {
 	Start(q <-chan struct{})
 }
 
-type Screen interface {
+type UIElement interface {
 	Render()
-	Process(e termbox.Event) Screen
+	Process(e termbox.Event) UIElement
 }
 
 type Pixel struct {
@@ -21,10 +21,10 @@ type Pixel struct {
 }
 
 type handler struct {
-	activeScreen Screen
+	activeScreen UIElement
 }
 
-func NewHandler(screen Screen) Handler {
+func NewHandler(screen UIElement) Handler {
 	return &handler{
 		activeScreen: screen,
 	}

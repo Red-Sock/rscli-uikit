@@ -34,11 +34,11 @@ type MultiSelectBox struct {
 	headerBG, headerFG,
 	submitBG, submitFG termbox.Attribute
 
-	callback func(args []string) rscliuitkit.Screen
+	callback func(args []string) rscliuitkit.UIElement
 }
 
 func New(
-	callback func(args []string) rscliuitkit.Screen,
+	callback func(args []string) rscliuitkit.UIElement,
 	atrs ...Attribute) (*MultiSelectBox, error) {
 
 	sb := &MultiSelectBox{
@@ -95,7 +95,7 @@ func (s *MultiSelectBox) Render() {
 	s.renderSubmitButton(cursorX, cursorY)
 }
 
-func (s *MultiSelectBox) Process(e termbox.Event) rscliuitkit.Screen {
+func (s *MultiSelectBox) Process(e termbox.Event) rscliuitkit.UIElement {
 	switch e.Key {
 	case termbox.KeyArrowUp:
 		if s.cursorPos > 0 {
