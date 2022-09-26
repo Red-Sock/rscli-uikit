@@ -4,16 +4,9 @@ import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
 	"github.com/Red-Sock/rscli-uikit/label"
 	"github.com/Red-Sock/rscli-uikit/selectone"
-	"github.com/nsf/termbox-go"
 )
 
 func main() {
-	err := termbox.Init()
-	if err != nil {
-		panic(err)
-	}
-	defer termbox.Close()
-
 	f := func(text string) rscliuitkit.UIElement {
 		return label.New(text)
 	}

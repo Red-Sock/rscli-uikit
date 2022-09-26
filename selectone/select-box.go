@@ -15,7 +15,7 @@ const (
 	defaultSeparator = '>'
 )
 
-type MultiSelectBox struct {
+type SelectBox struct {
 	header        string
 	items         []string
 	itemSeparator rune
@@ -33,9 +33,9 @@ type MultiSelectBox struct {
 
 func New(
 	callback func(args string) rscliuitkit.UIElement,
-	atrs ...Attribute) (*MultiSelectBox, error) {
+	atrs ...Attribute) (*SelectBox, error) {
 
-	sb := &MultiSelectBox{
+	sb := &SelectBox{
 		callback: callback,
 
 		headerFG: termbox.ColorDefault,
@@ -61,7 +61,7 @@ func New(
 	return sb, nil
 }
 
-func (s *MultiSelectBox) Render() {
+func (s *SelectBox) Render() {
 	cursorX, cursorY := s.x, s.y
 	for _, r := range s.header {
 		termbox.SetCell(cursorX, cursorY, r, s.headerFG, s.headerBG)
@@ -77,7 +77,7 @@ func (s *MultiSelectBox) Render() {
 	}
 }
 
-func (s *MultiSelectBox) Process(e termbox.Event) rscliuitkit.UIElement {
+func (s *SelectBox) Process(e termbox.Event) rscliuitkit.UIElement {
 	switch e.Key {
 	case termbox.KeyArrowUp:
 		if s.cursorPos > 0 {
@@ -96,7 +96,7 @@ func (s *MultiSelectBox) Process(e termbox.Event) rscliuitkit.UIElement {
 	return s
 }
 
-func (s *MultiSelectBox) renderItem(text string, x, y int, fg, bg termbox.Attribute) {
+func (s *SelectBox) renderItem(text string, x, y int, fg, bg termbox.Attribute) {
 	termbox.SetCell(x, y, s.itemSeparator, fg, bg)
 	x++
 	for _, r := range text {
@@ -105,7 +105,7 @@ func (s *MultiSelectBox) renderItem(text string, x, y int, fg, bg termbox.Attrib
 	}
 }
 
-func (s *MultiSelectBox) getColors(idx int) (termbox.Attribute, termbox.Attribute) {
+func (s *SelectBox) getColors(idx int) (termbox.Attribute, termbox.Attribute) {
 	var fg, bg termbox.Attribute
 	switch {
 	case idx == s.cursorPos:
