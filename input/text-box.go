@@ -19,10 +19,14 @@ type TextBox struct {
 	fg, bg termbox.Attribute
 
 	lu, ld, ru, rd, vs, hs rune
+
+	callback func(s string) rscliuitkit.UIElement
 }
 
-func NewTextBox(atrs ...Attribute) *TextBox {
-	tb := &TextBox{}
+func NewTextBox(callback func(s string) rscliuitkit.UIElement, atrs ...Attribute) *TextBox {
+	tb := &TextBox{
+		callback: callback,
+	}
 	for _, a := range atrs {
 		a(tb)
 	}
@@ -74,6 +78,8 @@ func (tb *TextBox) Process(e termbox.Event) rscliuitkit.UIElement {
 		tb.InsertRune('\t')
 	case termbox.KeySpace:
 		tb.InsertRune(' ')
+	case termbox.KeyEnter:
+		return tb.callback(string(tb.rText))
 	default:
 		if e.Ch != 0 {
 			tb.InsertRune(e.Ch)
