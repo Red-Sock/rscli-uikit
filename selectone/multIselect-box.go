@@ -1,14 +1,9 @@
 package selectone
 
 import (
-	"errors"
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
-)
-
-var (
-	ErrNoItems = errors.New("no items provide")
 )
 
 const (
