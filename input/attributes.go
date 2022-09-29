@@ -4,15 +4,15 @@ import "github.com/nsf/termbox-go"
 
 type Attribute func(box *TextBox)
 
-func NewAttributeFG(fg termbox.Attribute) Attribute {
+func FG(fg termbox.Attribute) Attribute {
 	return func(box *TextBox) {
-		box.fg = fg
+		box.fgInput = fg
 	}
 }
 
-func NewAttributeBG(bg termbox.Attribute) Attribute {
+func BG(bg termbox.Attribute) Attribute {
 	return func(box *TextBox) {
-		box.bg = bg
+		box.bgInput = bg
 	}
 }
 
@@ -21,7 +21,7 @@ func NewAttributeBG(bg termbox.Attribute) Attribute {
 // ru - right upper, rd - right down
 // vs - vertical side
 // hs - horizontal side
-func NewAttributeSideSymbols(lu, ld, ru, rd, vs, hs rune) Attribute {
+func SideSymbols(lu, ld, ru, rd, vs, hs rune) Attribute {
 	return func(tb *TextBox) {
 		tb.lu = lu
 		tb.ld = ld
@@ -29,5 +29,18 @@ func NewAttributeSideSymbols(lu, ld, ru, rd, vs, hs rune) Attribute {
 		tb.rd = rd
 		tb.vs = vs
 		tb.hs = hs
+	}
+}
+
+func TextAbove(text string) Attribute {
+	return func(box *TextBox) {
+		box.textAboveBox = text
+		box.Y++
+	}
+}
+
+func TextBelow(text string) Attribute {
+	return func(box *TextBox) {
+		box.textBelowBox = text
 	}
 }
