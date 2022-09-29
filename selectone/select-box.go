@@ -28,7 +28,7 @@ type SelectBox struct {
 
 func New(
 	callback func(args string) rscliuitkit.UIElement,
-	atrs ...Attribute) (*SelectBox) {
+	atrs ...Attribute) *SelectBox {
 
 	sb := &SelectBox{
 		callback: callback,

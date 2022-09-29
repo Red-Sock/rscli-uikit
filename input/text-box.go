@@ -26,14 +26,14 @@ type TextBox struct {
 func NewTextBox(callback func(s string) rscliuitkit.UIElement, atrs ...Attribute) *TextBox {
 	tb := &TextBox{
 		callback: callback,
-		fg: termbox.ColorDefault,
-		bg: termbox.ColorDefault,
-		lu: '┌',
-		ld: '└',
-		ru: '┐',
-		rd: '┘',
-		vs: '│',
-		hs: '─',
+		fg:       termbox.ColorDefault,
+		bg:       termbox.ColorDefault,
+		lu:       '┌',
+		ld:       '└',
+		ru:       '┐',
+		rd:       '┘',
+		vs:       '│',
+		hs:       '─',
 	}
 	for _, a := range atrs {
 		a(tb)
