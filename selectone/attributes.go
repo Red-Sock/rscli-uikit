@@ -13,10 +13,10 @@ const (
 	ColorSurfaceHeader
 )
 
-type Attribute func(sb *SelectBox)
+type Attribute func(sb *Box)
 
-func HeaderAttribute(header string) Attribute {
-	return func(sb *SelectBox) {
+func Header(header string) Attribute {
+	return func(sb *Box) {
 		if !strings.HasSuffix(header, ":") {
 			header += ":"
 		}
@@ -25,8 +25,8 @@ func HeaderAttribute(header string) Attribute {
 	}
 }
 
-func ItemsAttribute(items ...string) Attribute {
-	return func(sb *SelectBox) {
+func Items(items ...string) Attribute {
+	return func(sb *Box) {
 		sb.items = make([]string, len(items))
 		for idx := range items {
 			sb.items[idx] = items[idx]
@@ -35,15 +35,20 @@ func ItemsAttribute(items ...string) Attribute {
 	}
 }
 
-func CoordinatesAttribute(x, y int) Attribute {
-	return func(sb *SelectBox) {
+func X(x int) Attribute {
+	return func(sb *Box) {
 		sb.x = x
+	}
+}
+
+func Y(y int) Attribute {
+	return func(sb *Box) {
 		sb.y = y
 	}
 }
 
-func ColorBGAttribute(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
-	return func(sb *SelectBox) {
+func ColorBG(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
+	return func(sb *Box) {
 		switch type_ {
 		case ColorSurfaceDefault:
 			sb.defaultFG = fg
@@ -58,8 +63,8 @@ func ColorBGAttribute(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
 	}
 }
 
-func SeparatorSymbolAttribute(r rune) Attribute {
-	return func(sb *SelectBox) {
+func SeparatorSymbol(r rune) Attribute {
+	return func(sb *Box) {
 		sb.itemSeparator = r
 	}
 }

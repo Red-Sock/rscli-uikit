@@ -10,7 +10,7 @@ const (
 	defaultSeparator = '>'
 )
 
-type SelectBox struct {
+type Box struct {
 	header        string
 	items         []string
 	itemSeparator rune
@@ -28,9 +28,9 @@ type SelectBox struct {
 
 func New(
 	callback func(args string) rscliuitkit.UIElement,
-	atrs ...Attribute) *SelectBox {
+	atrs ...Attribute) *Box {
 
-	sb := &SelectBox{
+	sb := &Box{
 		callback: callback,
 
 		headerFG: termbox.ColorDefault,
@@ -52,7 +52,7 @@ func New(
 	return sb
 }
 
-func (s *SelectBox) Render() {
+func (s *Box) Render() {
 	cursorX, cursorY := s.x, s.y
 	for _, r := range s.header {
 		termbox.SetCell(cursorX, cursorY, r, s.headerFG, s.headerBG)
@@ -68,7 +68,7 @@ func (s *SelectBox) Render() {
 	}
 }
 
-func (s *SelectBox) Process(e termbox.Event) rscliuitkit.UIElement {
+func (s *Box) Process(e termbox.Event) rscliuitkit.UIElement {
 	switch e.Key {
 	case termbox.KeyArrowUp:
 		if s.cursorPos > 0 {
@@ -87,7 +87,7 @@ func (s *SelectBox) Process(e termbox.Event) rscliuitkit.UIElement {
 	return s
 }
 
-func (s *SelectBox) renderItem(text string, x, y int, fg, bg termbox.Attribute) {
+func (s *Box) renderItem(text string, x, y int, fg, bg termbox.Attribute) {
 	termbox.SetCell(x, y, s.itemSeparator, fg, bg)
 	x++
 	for _, r := range text {
@@ -96,7 +96,7 @@ func (s *SelectBox) renderItem(text string, x, y int, fg, bg termbox.Attribute) 
 	}
 }
 
-func (s *SelectBox) getColors(idx int) (termbox.Attribute, termbox.Attribute) {
+func (s *Box) getColors(idx int) (termbox.Attribute, termbox.Attribute) {
 	var fg, bg termbox.Attribute
 	switch {
 	case idx == s.cursorPos:

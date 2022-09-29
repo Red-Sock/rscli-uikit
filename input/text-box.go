@@ -77,9 +77,9 @@ func (tb *TextBox) Process(e termbox.Event) rscliuitkit.UIElement {
 			}
 		}
 	case termbox.KeyBackspace, termbox.KeyBackspace2:
-		tb.DeleteRune()
+		tb.DeleteRuneUnderCursor()
 	case termbox.KeyDelete, termbox.KeyCtrlD:
-		tb.DeleteRune()
+		tb.DeleteRuneUnderCursor()
 	case termbox.KeyTab:
 		tb.InsertRune('\t')
 	case termbox.KeySpace:
@@ -102,7 +102,7 @@ func (tb *TextBox) InsertRune(r rune) {
 	tb.editTextCursor++
 }
 
-func (tb *TextBox) DeleteRune() {
+func (tb *TextBox) DeleteRuneUnderCursor() {
 	if len(tb.rText) == 0 || tb.editTextCursor == 0 {
 		return
 	}
@@ -127,7 +127,6 @@ func (tb *TextBox) drawTextAbove() {
 		cursorX += runewidth.RuneWidth(r)
 	}
 }
-
 func (tb *TextBox) drawTextBelow() {
 	cursorX, cursorY := tb.X+tb.W/2, tb.Y+tb.H+2
 
@@ -137,6 +136,7 @@ func (tb *TextBox) drawTextBelow() {
 		cursorX += runewidth.RuneWidth(r)
 	}
 }
+
 func (tb *TextBox) drawBounds() {
 	//  top
 	termbox.SetCell(tb.X, tb.Y, tb.lu, tb.fgInput, tb.bgInput)
@@ -155,7 +155,6 @@ func (tb *TextBox) drawBounds() {
 	termbox.SetCell(tb.X+tb.W+1, tb.Y+tb.H+1, tb.rd, tb.fgInput, tb.bgInput)
 
 }
-
 func (tb *TextBox) drawContent() {
 	cursorX, cursorY := tb.X, tb.Y+1
 	text := []rune(tb.rText[tb.showTextStartCursor:])
@@ -195,7 +194,6 @@ func (tb *TextBox) drawContent() {
 		termbox.SetCell(cursorX, cursorY, ' ', tb.fgInput, tb.bgInput)
 	}
 }
-
 func (tb *TextBox) drawCursor() {
 	termbox.SetCursor(
 		tb.X+1+(tb.editTextCursor-tb.showTextStartCursor)%tb.W,
