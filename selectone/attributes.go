@@ -13,10 +13,10 @@ const (
 	ColorSurfaceHeader
 )
 
-type Attribute func(sb *MultiSelectBox)
+type Attribute func(sb *SelectBox)
 
 func HeaderAttribute(header string) Attribute {
-	return func(sb *MultiSelectBox) {
+	return func(sb *SelectBox) {
 		if !strings.HasSuffix(header, ":") {
 			header += ":"
 		}
@@ -26,7 +26,7 @@ func HeaderAttribute(header string) Attribute {
 }
 
 func ItemsAttribute(items ...string) Attribute {
-	return func(sb *MultiSelectBox) {
+	return func(sb *SelectBox) {
 		sb.items = make([]string, len(items))
 		for idx := range items {
 			sb.items[idx] = items[idx]
@@ -36,14 +36,14 @@ func ItemsAttribute(items ...string) Attribute {
 }
 
 func CoordinatesAttribute(x, y int) Attribute {
-	return func(sb *MultiSelectBox) {
+	return func(sb *SelectBox) {
 		sb.x = x
 		sb.y = y
 	}
 }
 
 func ColorBGAttribute(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
-	return func(sb *MultiSelectBox) {
+	return func(sb *SelectBox) {
 		switch type_ {
 		case ColorSurfaceDefault:
 			sb.defaultFG = fg
@@ -59,7 +59,7 @@ func ColorBGAttribute(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
 }
 
 func SeparatorSymbolAttribute(r rune) Attribute {
-	return func(sb *MultiSelectBox) {
+	return func(sb *SelectBox) {
 		sb.itemSeparator = r
 	}
 }
