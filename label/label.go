@@ -11,6 +11,8 @@ type Label struct {
 
 	x, y   int
 	fg, bg termbox.Attribute
+
+	next func() rscliuitkit.UIElement
 }
 
 func New(text string, attrs ...Attribute) rscliuitkit.UIElement {
@@ -31,6 +33,9 @@ func (t *Label) Render() {
 	}
 }
 
-func (t *Label) Process(e termbox.Event) rscliuitkit.UIElement {
-	return nil
+func (t *Label) Process(_ termbox.Event) rscliuitkit.UIElement {
+	if t.next == nil {
+		return nil
+	}
+	return t.next()
 }

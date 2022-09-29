@@ -13,43 +13,49 @@ type TextBox struct {
 	// new fields
 	rText []rune
 
+	textAboveBox        string
+	textBelowBox        string
 	showTextStartCursor int
 	editTextCursor      int
 
-	fg, bg termbox.Attribute
+	fgInput, bgInput,
+	textAboveFg, textAboveBg,
+	textBelowFg, textBelowBg termbox.Attribute
 
 	lu, ld, ru, rd, vs, hs rune
 
 	callback func(s string) rscliuitkit.UIElement
 }
 
-func NewTextBox(callback func(s string) rscliuitkit.UIElement, atrs ...Attribute) *TextBox {
+func New(callback func(s string) rscliuitkit.UIElement, atrs ...Attribute) *TextBox {
 	tb := &TextBox{
 		callback: callback,
+		fgInput:  termbox.ColorDefault,
+		bgInput:  termbox.ColorDefault,
+		lu:       '┌',
+		ld:       '└',
+		ru:       '┐',
+		rd:       '┘',
+		vs:       '│',
+		hs:       '─',
+		W:        20,
+		H:        1,
 	}
 	for _, a := range atrs {
 		a(tb)
-	}
-
-	if tb.fg == 0 {
-		NewAttributeFG(termbox.ColorDefault)(tb)
-	}
-
-	if tb.bg == 0 {
-		NewAttributeBG(termbox.ColorDefault)(tb)
-	}
-
-	if tb.lu == 0 {
-		NewAttributeSideSymbols('┌', '└', '┐', '┘', '│', '─')(tb)
 	}
 
 	return tb
 }
 
 func (tb *TextBox) Render() {
+	tb.drawTextAbove()
+
 	tb.drawBounds()
 	tb.drawContent()
 	tb.drawCursor()
+
+	tb.drawTextBelow()
 }
 
 func (tb *TextBox) Process(e termbox.Event) rscliuitkit.UIElement {
@@ -71,9 +77,9 @@ func (tb *TextBox) Process(e termbox.Event) rscliuitkit.UIElement {
 			}
 		}
 	case termbox.KeyBackspace, termbox.KeyBackspace2:
-		tb.DeleteRune()
+		tb.DeleteRuneUnderCursor()
 	case termbox.KeyDelete, termbox.KeyCtrlD:
-		tb.DeleteRune()
+		tb.DeleteRuneUnderCursor()
 	case termbox.KeyTab:
 		tb.InsertRune('\t')
 	case termbox.KeySpace:
@@ -96,7 +102,7 @@ func (tb *TextBox) InsertRune(r rune) {
 	tb.editTextCursor++
 }
 
-func (tb *TextBox) DeleteRune() {
+func (tb *TextBox) DeleteRuneUnderCursor() {
 	if len(tb.rText) == 0 || tb.editTextCursor == 0 {
 		return
 	}
@@ -112,28 +118,46 @@ func (tb *TextBox) GetScreenSpace() int {
 	return tb.W * tb.H
 }
 
+func (tb *TextBox) drawTextAbove() {
+	cursorX, cursorY := tb.X+tb.W/2, tb.Y-1
+
+	cursorX -= len([]rune(tb.textAboveBox)) / 2
+	for _, r := range []rune(tb.textAboveBox) {
+		termbox.SetCell(cursorX, cursorY, r, tb.textAboveFg, tb.textAboveBg)
+		cursorX += runewidth.RuneWidth(r)
+	}
+}
+func (tb *TextBox) drawTextBelow() {
+	cursorX, cursorY := tb.X+tb.W/2, tb.Y+tb.H+2
+
+	cursorX -= len([]rune(tb.textBelowBox)) / 2
+	for _, r := range []rune(tb.textBelowBox) {
+		termbox.SetCell(cursorX, cursorY, r, tb.textBelowFg, tb.textBelowBg)
+		cursorX += runewidth.RuneWidth(r)
+	}
+}
+
 func (tb *TextBox) drawBounds() {
 	//  top
-	termbox.SetCell(tb.X, tb.Y, tb.lu, tb.fg, tb.bg)
-	common.FillArea(tb.X+1, tb.Y, tb.W+1, 1, tb.hs, tb.fg, tb.bg)
-	termbox.SetCell(tb.X+tb.W+1, tb.Y, tb.ru, tb.fg, tb.bg)
+	termbox.SetCell(tb.X, tb.Y, tb.lu, tb.fgInput, tb.bgInput)
+	common.FillArea(tb.X+1, tb.Y, tb.W+1, 1, tb.hs, tb.fgInput, tb.bgInput)
+	termbox.SetCell(tb.X+tb.W+1, tb.Y, tb.ru, tb.fgInput, tb.bgInput)
 
 	// sides
 	for y := tb.Y + 1; y < tb.Y+tb.H+2; y++ {
-		termbox.SetCell(tb.X, y, tb.vs, tb.fg, tb.bg)
-		termbox.SetCell(tb.X+tb.W+1, y, tb.vs, tb.fg, tb.bg)
+		termbox.SetCell(tb.X, y, tb.vs, tb.fgInput, tb.bgInput)
+		termbox.SetCell(tb.X+tb.W+1, y, tb.vs, tb.fgInput, tb.bgInput)
 	}
 
 	// bottom
-	termbox.SetCell(tb.X, tb.Y+tb.H+1, tb.ld, tb.fg, tb.bg)
-	common.FillArea(tb.X+1, tb.Y+tb.H+1, tb.W+1, 1, tb.hs, tb.fg, tb.bg)
-	termbox.SetCell(tb.X+tb.W+1, tb.Y+tb.H+1, tb.rd, tb.fg, tb.bg)
+	termbox.SetCell(tb.X, tb.Y+tb.H+1, tb.ld, tb.fgInput, tb.bgInput)
+	common.FillArea(tb.X+1, tb.Y+tb.H+1, tb.W+1, 1, tb.hs, tb.fgInput, tb.bgInput)
+	termbox.SetCell(tb.X+tb.W+1, tb.Y+tb.H+1, tb.rd, tb.fgInput, tb.bgInput)
 
 }
-
 func (tb *TextBox) drawContent() {
 	cursorX, cursorY := tb.X, tb.Y+1
-	text := tb.rText[tb.showTextStartCursor:]
+	text := []rune(tb.rText[tb.showTextStartCursor:])
 
 	for len(text) > 0 {
 		r := text[0]
@@ -150,7 +174,7 @@ func (tb *TextBox) drawContent() {
 			break
 		}
 
-		termbox.SetCell(cursorX, cursorY, r, tb.fg, tb.bg)
+		termbox.SetCell(cursorX, cursorY, r, tb.fgInput, tb.bgInput)
 
 		text = text[1:]
 	}
@@ -167,10 +191,9 @@ func (tb *TextBox) drawContent() {
 		if cursorY > tb.Y+tb.H {
 			break
 		}
-		termbox.SetCell(cursorX, cursorY, ' ', tb.fg, tb.bg)
+		termbox.SetCell(cursorX, cursorY, ' ', tb.fgInput, tb.bgInput)
 	}
 }
-
 func (tb *TextBox) drawCursor() {
 	termbox.SetCursor(
 		tb.X+1+(tb.editTextCursor-tb.showTextStartCursor)%tb.W,
