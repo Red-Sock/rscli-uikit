@@ -1,15 +1,10 @@
 package multiselect
 
 import (
-	"errors"
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
 	"github.com/Red-Sock/rscli-uikit/internal/common"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
-)
-
-var (
-	ErrNoItems = errors.New("no items provide")
 )
 
 const (
@@ -17,11 +12,12 @@ const (
 )
 
 type MultiSelectBox struct {
-	header        string
-	items         []string
-	itemSeparator rune
-
-	submitText string
+	header                   string
+	items                    []string
+	itemSeparator            []rune
+	itemSeparatorUnderCursor []rune
+	itemSeparatorChecked     []rune
+	submitText               string
 
 	checkedIdx []int
 	cursorPos  int
@@ -39,7 +35,7 @@ type MultiSelectBox struct {
 
 func New(
 	callback func(args []string) rscliuitkit.UIElement,
-	atrs ...Attribute) (*MultiSelectBox, error) {
+	atrs ...Attribute) *MultiSelectBox {
 
 	sb := &MultiSelectBox{
 		callback: callback,
@@ -59,22 +55,18 @@ func New(
 		submitFG: termbox.ColorDefault,
 		submitBG: termbox.ColorDefault,
 
-		itemSeparator: defaultSeparator,
+		itemSeparator: []rune{defaultSeparator},
 	}
 
 	for _, a := range atrs {
 		a(sb)
 	}
 
-	if len(sb.items) == 0 {
-		return nil, ErrNoItems
-	}
-
 	if sb.submitText == "" {
 		sb.submitText = "submit"
 	}
 
-	return sb, nil
+	return sb
 }
 
 func (s *MultiSelectBox) Render() {
@@ -87,8 +79,8 @@ func (s *MultiSelectBox) Render() {
 	cursorY = s.y + 1
 
 	for idx := range s.items {
-		fg, bg := s.getColors(idx)
-		s.renderItem(s.items[idx], cursorX, cursorY, fg, bg)
+		separator, fg, bg := s.getColors(idx)
+		s.renderItem(string(separator)+s.items[idx], cursorX, cursorY, fg, bg)
 		cursorY++
 	}
 
@@ -124,8 +116,6 @@ func (s *MultiSelectBox) Process(e termbox.Event) rscliuitkit.UIElement {
 }
 
 func (s *MultiSelectBox) renderItem(text string, x, y int, fg, bg termbox.Attribute) {
-	termbox.SetCell(x, y, s.itemSeparator, fg, bg)
-	x++
 	for _, r := range text {
 		termbox.SetCell(x, y, r, fg, bg)
 		x += runewidth.RuneWidth(r)
@@ -149,15 +139,13 @@ func (s *MultiSelectBox) renderSubmitButton(cursorX, cursorY int) {
 	}
 }
 
-func (s *MultiSelectBox) getColors(idx int) (termbox.Attribute, termbox.Attribute) {
-	var fg, bg termbox.Attribute
+func (s *MultiSelectBox) getColors(idx int) ([]rune, termbox.Attribute, termbox.Attribute) {
 	switch {
 	case idx == s.cursorPos:
-		fg, bg = s.cursorFG, s.cursorBG
+		return s.itemSeparatorUnderCursor, s.cursorFG, s.cursorBG
 	case common.Contains(s.checkedIdx, idx):
-		fg, bg = s.checkedFG, s.checkedBG
+		return s.itemSeparatorChecked, s.checkedFG, s.checkedBG
 	default:
-		fg, bg = s.defaultFG, s.defaultBG
+		return s.itemSeparator, s.defaultFG, s.defaultBG
 	}
-	return fg, bg
 }

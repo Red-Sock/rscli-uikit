@@ -1,14 +1,9 @@
 package selectone
 
 import (
-	"errors"
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
-)
-
-var (
-	ErrNoItems = errors.New("no items provide")
 )
 
 const (
@@ -33,7 +28,7 @@ type SelectBox struct {
 
 func New(
 	callback func(args string) rscliuitkit.UIElement,
-	atrs ...Attribute) (*SelectBox, error) {
+	atrs ...Attribute) *SelectBox {
 
 	sb := &SelectBox{
 		callback: callback,
@@ -54,11 +49,7 @@ func New(
 		a(sb)
 	}
 
-	if len(sb.items) == 0 {
-		return nil, ErrNoItems
-	}
-
-	return sb, nil
+	return sb
 }
 
 func (s *SelectBox) Render() {
