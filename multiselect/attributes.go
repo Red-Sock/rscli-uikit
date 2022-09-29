@@ -66,9 +66,21 @@ func ColorBGAttribute(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
 	}
 }
 
-func SeparatorSymbolAttribute(r rune) Attribute {
+func SeparatorSymbolAttribute(r []rune) Attribute {
 	return func(sb *MultiSelectBox) {
 		sb.itemSeparator = r
+	}
+}
+
+func SeparatorUnderCursor(r []rune) Attribute {
+	return func(sb *MultiSelectBox) {
+		sb.itemSeparatorUnderCursor = r
+	}
+}
+
+func SeparatorCheckedCursor(r []rune) Attribute {
+	return func(sb *MultiSelectBox) {
+		sb.itemSeparatorUnderCursor = r
 	}
 }
 
