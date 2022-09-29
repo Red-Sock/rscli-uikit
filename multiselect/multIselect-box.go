@@ -1,15 +1,10 @@
 package multiselect
 
 import (
-	"errors"
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
 	"github.com/Red-Sock/rscli-uikit/internal/common"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
-)
-
-var (
-	ErrNoItems = errors.New("no items provide")
 )
 
 const (
@@ -40,7 +35,7 @@ type MultiSelectBox struct {
 
 func New(
 	callback func(args []string) rscliuitkit.UIElement,
-	atrs ...Attribute) (*MultiSelectBox, error) {
+	atrs ...Attribute) *MultiSelectBox {
 
 	sb := &MultiSelectBox{
 		callback: callback,
@@ -67,15 +62,11 @@ func New(
 		a(sb)
 	}
 
-	if len(sb.items) == 0 {
-		return nil, ErrNoItems
-	}
-
 	if sb.submitText == "" {
 		sb.submitText = "submit"
 	}
 
-	return sb, nil
+	return sb
 }
 
 func (s *MultiSelectBox) Render() {

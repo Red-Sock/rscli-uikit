@@ -33,7 +33,7 @@ type MultiSelectBox struct {
 
 func New(
 	callback func(args string) rscliuitkit.UIElement,
-	atrs ...Attribute) (*MultiSelectBox, error) {
+	atrs ...Attribute) *MultiSelectBox {
 
 	sb := &MultiSelectBox{
 		callback: callback,
@@ -54,11 +54,7 @@ func New(
 		a(sb)
 	}
 
-	if len(sb.items) == 0 {
-		return nil, ErrNoItems
-	}
-
-	return sb, nil
+	return sb
 }
 
 func (s *MultiSelectBox) Render() {

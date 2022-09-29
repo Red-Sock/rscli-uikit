@@ -22,21 +22,18 @@ type TextBox struct {
 }
 
 func NewTextBox(atrs ...Attribute) *TextBox {
-	tb := &TextBox{}
+	tb := &TextBox{
+		fg: termbox.ColorDefault,
+		bg: termbox.ColorDefault,
+		lu: '┌',
+		ld: '└',
+		ru: '┐',
+		rd: '┘',
+		vs: '│',
+		hs: '─',
+	}
 	for _, a := range atrs {
 		a(tb)
-	}
-
-	if tb.fg == 0 {
-		NewAttributeFG(termbox.ColorDefault)(tb)
-	}
-
-	if tb.bg == 0 {
-		NewAttributeBG(termbox.ColorDefault)(tb)
-	}
-
-	if tb.lu == 0 {
-		NewAttributeSideSymbols('┌', '└', '┐', '┘', '│', '─')(tb)
 	}
 
 	return tb
