@@ -4,19 +4,39 @@ import "github.com/nsf/termbox-go"
 
 type Attribute func(box *TextBox)
 
-func FG(fg termbox.Attribute) Attribute {
+func X(x int) Attribute {
+	return func(box *TextBox) {
+		box.X = x
+	}
+}
+func Y(y int) Attribute {
+	return func(box *TextBox) {
+		box.Y = y
+	}
+}
+func Width(w int) Attribute {
+	return func(box *TextBox) {
+		box.W = w
+	}
+}
+func Height(h int) Attribute {
+	return func(box *TextBox) {
+		box.H = h
+	}
+}
+
+func ContentFG(fg termbox.Attribute) Attribute {
 	return func(box *TextBox) {
 		box.fgInput = fg
 	}
 }
-
-func BG(bg termbox.Attribute) Attribute {
+func ContentBG(bg termbox.Attribute) Attribute {
 	return func(box *TextBox) {
 		box.bgInput = bg
 	}
 }
 
-// NewAttributeSideSymbols overrides default symbols for rendering TextBox
+// SideSymbols overrides default symbols for rendering TextBox
 // lu - left upper corner, ld - left down
 // ru - right upper, rd - right down
 // vs - vertical side
@@ -38,9 +58,21 @@ func TextAbove(text string) Attribute {
 		box.Y++
 	}
 }
+func TextAboveColor(fg, bg termbox.Attribute) Attribute {
+	return func(box *TextBox) {
+		box.textAboveFg = fg
+		box.textAboveBg = bg
+	}
+}
 
 func TextBelow(text string) Attribute {
 	return func(box *TextBox) {
 		box.textBelowBox = text
+	}
+}
+func TextBelowColor(fg, bg termbox.Attribute) Attribute {
+	return func(box *TextBox) {
+		box.textBelowFg = fg
+		box.textBelowBg = bg
 	}
 }

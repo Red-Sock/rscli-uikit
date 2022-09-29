@@ -33,7 +33,7 @@ func (t *Label) Render() {
 	}
 }
 
-func (t *Label) Process(e termbox.Event) rscliuitkit.UIElement {
+func (t *Label) Process(_ termbox.Event) rscliuitkit.UIElement {
 	if t.next == nil {
 		return nil
 	}

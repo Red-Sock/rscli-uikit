@@ -11,13 +11,15 @@ const (
 	defaultSeparator = '>'
 )
 
-type MultiSelectBox struct {
-	header                   string
+type Box struct {
+	header string
+
 	items                    []string
 	itemSeparator            []rune
 	itemSeparatorUnderCursor []rune
 	itemSeparatorChecked     []rune
-	submitText               string
+
+	submitText string
 
 	checkedIdx []int
 	cursorPos  int
@@ -35,9 +37,9 @@ type MultiSelectBox struct {
 
 func New(
 	callback func(args []string) rscliuitkit.UIElement,
-	atrs ...Attribute) *MultiSelectBox {
+	atrs ...Attribute) *Box {
 
-	sb := &MultiSelectBox{
+	sb := &Box{
 		callback: callback,
 
 		headerFG: termbox.ColorDefault,
@@ -69,7 +71,7 @@ func New(
 	return sb
 }
 
-func (s *MultiSelectBox) Render() {
+func (s *Box) Render() {
 	cursorX, cursorY := s.x, s.y
 	for _, r := range s.header {
 		termbox.SetCell(cursorX, cursorY, r, s.headerFG, s.headerBG)
@@ -87,7 +89,7 @@ func (s *MultiSelectBox) Render() {
 	s.renderSubmitButton(cursorX, cursorY)
 }
 
-func (s *MultiSelectBox) Process(e termbox.Event) rscliuitkit.UIElement {
+func (s *Box) Process(e termbox.Event) rscliuitkit.UIElement {
 	switch e.Key {
 	case termbox.KeyArrowUp:
 		if s.cursorPos > 0 {
@@ -115,14 +117,14 @@ func (s *MultiSelectBox) Process(e termbox.Event) rscliuitkit.UIElement {
 	return s
 }
 
-func (s *MultiSelectBox) renderItem(text string, x, y int, fg, bg termbox.Attribute) {
+func (s *Box) renderItem(text string, x, y int, fg, bg termbox.Attribute) {
 	for _, r := range text {
 		termbox.SetCell(x, y, r, fg, bg)
 		x += runewidth.RuneWidth(r)
 	}
 }
 
-func (s *MultiSelectBox) renderSubmitButton(cursorX, cursorY int) {
+func (s *Box) renderSubmitButton(cursorX, cursorY int) {
 	var fg, bg termbox.Attribute
 
 	if s.cursorPos == len(s.items) {
@@ -139,7 +141,7 @@ func (s *MultiSelectBox) renderSubmitButton(cursorX, cursorY int) {
 	}
 }
 
-func (s *MultiSelectBox) getColors(idx int) ([]rune, termbox.Attribute, termbox.Attribute) {
+func (s *Box) getColors(idx int) ([]rune, termbox.Attribute, termbox.Attribute) {
 	switch {
 	case idx == s.cursorPos:
 		return s.itemSeparatorUnderCursor, s.cursorFG, s.cursorBG

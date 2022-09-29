@@ -15,10 +15,10 @@ const (
 	ColorSurfaceSubmit
 )
 
-type Attribute func(sb *MultiSelectBox)
+type Attribute func(sb *Box)
 
-func HeaderAttribute(header string) Attribute {
-	return func(sb *MultiSelectBox) {
+func Header(header string) Attribute {
+	return func(sb *Box) {
 		if !strings.HasSuffix(header, ":") {
 			header += ":"
 		}
@@ -27,8 +27,8 @@ func HeaderAttribute(header string) Attribute {
 	}
 }
 
-func ItemsAttribute(items ...string) Attribute {
-	return func(sb *MultiSelectBox) {
+func Items(items ...string) Attribute {
+	return func(sb *Box) {
 		sb.items = make([]string, len(items))
 		for idx := range items {
 			sb.items[idx] = items[idx]
@@ -37,15 +37,20 @@ func ItemsAttribute(items ...string) Attribute {
 	}
 }
 
-func CoordinatesAttribute(x, y int) Attribute {
-	return func(sb *MultiSelectBox) {
+func X(x int) Attribute {
+	return func(sb *Box) {
 		sb.x = x
+	}
+}
+
+func Y(y int) Attribute {
+	return func(sb *Box) {
 		sb.y = y
 	}
 }
 
-func ColorBGAttribute(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
-	return func(sb *MultiSelectBox) {
+func ColorBG(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
+	return func(sb *Box) {
 		switch type_ {
 		case ColorSurfaceDefault:
 			sb.defaultFG = fg
@@ -66,26 +71,24 @@ func ColorBGAttribute(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
 	}
 }
 
-func SeparatorSymbolAttribute(r []rune) Attribute {
-	return func(sb *MultiSelectBox) {
+func SeparatorSymbol(r []rune) Attribute {
+	return func(sb *Box) {
 		sb.itemSeparator = r
 	}
 }
-
 func SeparatorUnderCursor(r []rune) Attribute {
-	return func(sb *MultiSelectBox) {
+	return func(sb *Box) {
 		sb.itemSeparatorUnderCursor = r
 	}
 }
-
 func SeparatorCheckedCursor(r []rune) Attribute {
-	return func(sb *MultiSelectBox) {
+	return func(sb *Box) {
 		sb.itemSeparatorUnderCursor = r
 	}
 }
 
-func SubmitTextAttribute(text string) Attribute {
-	return func(sb *MultiSelectBox) {
+func SubmitText(text string) Attribute {
+	return func(sb *Box) {
 		sb.submitText = text
 	}
 }
