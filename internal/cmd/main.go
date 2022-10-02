@@ -2,6 +2,7 @@ package main
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
+	"github.com/Red-Sock/rscli-uikit/common"
 	"github.com/Red-Sock/rscli-uikit/input"
 	"github.com/Red-Sock/rscli-uikit/label"
 )
@@ -17,6 +18,8 @@ func main() {
 		input.TextBelow("hello world"),
 
 		input.Expandable(),
+
+		input.Position(common.NewRelativePositioning(0.5, 0.5)),
 	)
 
 	q := make(chan struct{})
