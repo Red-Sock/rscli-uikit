@@ -76,3 +76,26 @@ func TextBelowColor(fg, bg termbox.Attribute) Attribute {
 		box.textBelowBg = bg
 	}
 }
+
+func Expandable() Attribute {
+	return func(box *TextBox) {
+		box.isExpandable = true
+	}
+}
+func ExpandableMax(value int) Attribute {
+	return func(box *TextBox) {
+		box.isExpandable = true
+		box.maxW = value
+	}
+}
+func ExpandableMin(value int) Attribute {
+	return func(box *TextBox) {
+		box.isExpandable = true
+		box.minW = value
+	}
+}
+func ExpandableStep(value int) Attribute {
+	return func(box *TextBox) {
+		box.expandingStep = value
+	}
+}
