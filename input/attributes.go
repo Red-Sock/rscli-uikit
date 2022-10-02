@@ -1,7 +1,7 @@
 package input
 
 import (
-	"github.com/Red-Sock/rscli-uikit/internal/common"
+	"github.com/Red-Sock/rscli-uikit/common"
 	"github.com/nsf/termbox-go"
 )
 

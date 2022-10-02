@@ -2,7 +2,8 @@ package input
 
 import (
 	"github.com/Red-Sock/rscli-uikit"
-	"github.com/Red-Sock/rscli-uikit/internal/common"
+	"github.com/Red-Sock/rscli-uikit/common"
+	"github.com/Red-Sock/rscli-uikit/internal/utils"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
 )
@@ -58,6 +59,8 @@ func New(callback func(s string) rscliuitkit.UIElement, atrs ...Attribute) *Text
 		tb.pos = &common.AbsolutePositioning{}
 	}
 
+	tb.x, tb.y = tb.pos.GetPosition()
+
 	return tb
 }
 
@@ -112,10 +115,10 @@ func (tb *TextBox) Process(e termbox.Event) rscliuitkit.UIElement {
 func (tb *TextBox) InsertRune(r rune) {
 	if tb.isExpandable && tb.W <= len(tb.rText)+1 {
 		if tb.maxW != 0 {
-			tb.W = common.AddOrMax(tb.W, tb.expandingStep, tb.maxW)
+			tb.W = utils.AddOrMax(tb.W, tb.expandingStep, tb.maxW)
 		} else {
 			w, _ := termbox.Size()
-			tb.W = common.AddOrMax(tb.W, tb.expandingStep, w-2)
+			tb.W = utils.AddOrMax(tb.W, tb.expandingStep, w-2)
 		}
 	}
 
@@ -131,14 +134,14 @@ func (tb *TextBox) DeleteRuneUnderCursor() {
 		return
 	}
 
-	tb.rText = common.RemoveFromSlice(tb.rText, tb.editTextCursor-1)
+	tb.rText = utils.RemoveFromSlice(tb.rText, tb.editTextCursor-1)
 	if tb.showTextStartCursor > 0 {
 		tb.showTextStartCursor--
 	}
 	tb.editTextCursor--
 
 	if tb.isExpandable && len(tb.rText)-1 <= tb.W {
-		tb.W = common.SubtractOrMin(tb.W, tb.expandingStep, tb.minW)
+		tb.W = utils.SubtractOrMin(tb.W, tb.expandingStep, tb.minW)
 	}
 }
 
@@ -174,7 +177,7 @@ func (tb *TextBox) drawTextBelow() {
 func (tb *TextBox) drawBounds() {
 	//  top
 	termbox.SetCell(tb.x, tb.y, tb.lu, tb.fgInput, tb.bgInput)
-	common.FillArea(tb.x+1, tb.y, tb.W+1, 1, tb.hs, tb.fgInput, tb.bgInput)
+	utils.FillArea(tb.x+1, tb.y, tb.W+1, 1, tb.hs, tb.fgInput, tb.bgInput)
 	termbox.SetCell(tb.x+tb.W+1, tb.y, tb.ru, tb.fgInput, tb.bgInput)
 
 	// sides
@@ -185,7 +188,7 @@ func (tb *TextBox) drawBounds() {
 
 	// bottom
 	termbox.SetCell(tb.x, tb.y+tb.H+1, tb.ld, tb.fgInput, tb.bgInput)
-	common.FillArea(tb.x+1, tb.y+tb.H+1, tb.W+1, 1, tb.hs, tb.fgInput, tb.bgInput)
+	utils.FillArea(tb.x+1, tb.y+tb.H+1, tb.W+1, 1, tb.hs, tb.fgInput, tb.bgInput)
 	termbox.SetCell(tb.x+tb.W+1, tb.y+tb.H+1, tb.rd, tb.fgInput, tb.bgInput)
 
 }

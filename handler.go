@@ -5,6 +5,13 @@ import (
 	"log"
 )
 
+func init() {
+	err := termbox.Init()
+	if err != nil {
+		panic(err)
+	}
+}
+
 type Handler interface {
 	Start(q <-chan struct{})
 }
@@ -31,10 +38,6 @@ func NewHandler(screen UIElement) Handler {
 }
 
 func (h *handler) Start(q <-chan struct{}) {
-	err := termbox.Init()
-	if err != nil {
-		panic(err)
-	}
 	defer termbox.Close()
 
 	event := make(chan termbox.Event)
