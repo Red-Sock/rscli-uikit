@@ -1,17 +1,15 @@
 package input
 
-import "github.com/nsf/termbox-go"
+import (
+	"github.com/Red-Sock/rscli-uikit/internal/common"
+	"github.com/nsf/termbox-go"
+)
 
 type Attribute func(box *TextBox)
 
-func X(x int) Attribute {
+func Position(pos common.Positioner) Attribute {
 	return func(box *TextBox) {
-		box.X = x
-	}
-}
-func Y(y int) Attribute {
-	return func(box *TextBox) {
-		box.Y = y
+		box.pos = pos
 	}
 }
 func Width(w int) Attribute {
@@ -55,7 +53,6 @@ func SideSymbols(lu, ld, ru, rd, vs, hs rune) Attribute {
 func TextAbove(text string) Attribute {
 	return func(box *TextBox) {
 		box.textAboveBox = text
-		box.Y++
 	}
 }
 func TextAboveColor(fg, bg termbox.Attribute) Attribute {

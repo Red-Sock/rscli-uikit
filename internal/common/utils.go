@@ -52,7 +52,7 @@ func AddOrMax(startValue, addValue, maxValue int) int {
 
 func SubtractOrMin(startValue, subValue, minValue int) int {
 	startValue -= subValue
-	if startValue < minValue {
+	if startValue > minValue {
 		return startValue
 	}
 

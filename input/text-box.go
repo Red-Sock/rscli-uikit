@@ -8,7 +8,9 @@ import (
 )
 
 type TextBox struct {
-	X, Y, H, W int
+	pos common.Positioner
+
+	x, y, H, W int
 
 	// new fields
 	rText []rune
@@ -52,6 +54,10 @@ func New(callback func(s string) rscliuitkit.UIElement, atrs ...Attribute) *Text
 		a(tb)
 	}
 
+	if tb.pos == nil {
+		tb.pos = &common.AbsolutePositioning{}
+	}
+
 	return tb
 }
 
@@ -66,6 +72,8 @@ func (tb *TextBox) Render() {
 }
 
 func (tb *TextBox) Process(e termbox.Event) rscliuitkit.UIElement {
+	tb.x, tb.y = tb.pos.GetPosition()
+
 	switch e.Key {
 	case termbox.KeyEsc:
 		return nil
@@ -129,7 +137,7 @@ func (tb *TextBox) DeleteRuneUnderCursor() {
 	}
 	tb.editTextCursor--
 
-	if tb.isExpandable && tb.W > tb.minW {
+	if tb.isExpandable && len(tb.rText)-1 <= tb.W {
 		tb.W = common.SubtractOrMin(tb.W, tb.expandingStep, tb.minW)
 	}
 }
@@ -140,16 +148,21 @@ func (tb *TextBox) GetScreenSpace() int {
 }
 
 func (tb *TextBox) drawTextAbove() {
-	cursorX, cursorY := tb.X+tb.W/2, tb.Y-1
+	if tb.textAboveBox == "" {
+		return
+	}
+
+	cursorX, cursorY := tb.x+tb.W/2, tb.y
 
 	cursorX -= len([]rune(tb.textAboveBox)) / 2
 	for _, r := range []rune(tb.textAboveBox) {
 		termbox.SetCell(cursorX, cursorY, r, tb.textAboveFg, tb.textAboveBg)
 		cursorX += runewidth.RuneWidth(r)
 	}
+	tb.y++
 }
 func (tb *TextBox) drawTextBelow() {
-	cursorX, cursorY := tb.X+tb.W/2, tb.Y+tb.H+2
+	cursorX, cursorY := tb.x+tb.W/2, tb.y+tb.H+2
 
 	cursorX -= len([]rune(tb.textBelowBox)) / 2
 	for _, r := range []rune(tb.textBelowBox) {
@@ -160,38 +173,38 @@ func (tb *TextBox) drawTextBelow() {
 
 func (tb *TextBox) drawBounds() {
 	//  top
-	termbox.SetCell(tb.X, tb.Y, tb.lu, tb.fgInput, tb.bgInput)
-	common.FillArea(tb.X+1, tb.Y, tb.W+1, 1, tb.hs, tb.fgInput, tb.bgInput)
-	termbox.SetCell(tb.X+tb.W+1, tb.Y, tb.ru, tb.fgInput, tb.bgInput)
+	termbox.SetCell(tb.x, tb.y, tb.lu, tb.fgInput, tb.bgInput)
+	common.FillArea(tb.x+1, tb.y, tb.W+1, 1, tb.hs, tb.fgInput, tb.bgInput)
+	termbox.SetCell(tb.x+tb.W+1, tb.y, tb.ru, tb.fgInput, tb.bgInput)
 
 	// sides
-	for y := tb.Y + 1; y < tb.Y+tb.H+2; y++ {
-		termbox.SetCell(tb.X, y, tb.vs, tb.fgInput, tb.bgInput)
-		termbox.SetCell(tb.X+tb.W+1, y, tb.vs, tb.fgInput, tb.bgInput)
+	for y := tb.y + 1; y < tb.y+tb.H+2; y++ {
+		termbox.SetCell(tb.x, y, tb.vs, tb.fgInput, tb.bgInput)
+		termbox.SetCell(tb.x+tb.W+1, y, tb.vs, tb.fgInput, tb.bgInput)
 	}
 
 	// bottom
-	termbox.SetCell(tb.X, tb.Y+tb.H+1, tb.ld, tb.fgInput, tb.bgInput)
-	common.FillArea(tb.X+1, tb.Y+tb.H+1, tb.W+1, 1, tb.hs, tb.fgInput, tb.bgInput)
-	termbox.SetCell(tb.X+tb.W+1, tb.Y+tb.H+1, tb.rd, tb.fgInput, tb.bgInput)
+	termbox.SetCell(tb.x, tb.y+tb.H+1, tb.ld, tb.fgInput, tb.bgInput)
+	common.FillArea(tb.x+1, tb.y+tb.H+1, tb.W+1, 1, tb.hs, tb.fgInput, tb.bgInput)
+	termbox.SetCell(tb.x+tb.W+1, tb.y+tb.H+1, tb.rd, tb.fgInput, tb.bgInput)
 
 }
 func (tb *TextBox) drawContent() {
-	cursorX, cursorY := tb.X, tb.Y+1
+	cursorX, cursorY := tb.x, tb.y+1
 	text := tb.rText[tb.showTextStartCursor:]
 
 	for len(text) > 0 {
 		r := text[0]
 		rLen := runewidth.RuneWidth(r)
 
-		if cursorX+rLen > tb.X+tb.W {
-			cursorX = tb.X + 1
+		if cursorX+rLen > tb.x+tb.W {
+			cursorX = tb.x + 1
 			cursorY++
 		} else {
 			cursorX += rLen
 		}
 
-		if cursorY > tb.Y+tb.H {
+		if cursorY > tb.y+tb.H {
 			break
 		}
 
@@ -202,14 +215,14 @@ func (tb *TextBox) drawContent() {
 
 	filledCells := len(tb.rText)
 	for filledCells < tb.GetScreenSpace() {
-		if cursorX+1 > tb.X+tb.W {
-			cursorX = tb.X + 1
+		if cursorX+1 > tb.x+tb.W {
+			cursorX = tb.x + 1
 			cursorY++
 		} else {
 			cursorX += 1
 		}
 
-		if cursorY > tb.Y+tb.H {
+		if cursorY > tb.y+tb.H {
 			break
 		}
 		termbox.SetCell(cursorX, cursorY, ' ', tb.fgInput, tb.bgInput)
@@ -217,7 +230,7 @@ func (tb *TextBox) drawContent() {
 }
 func (tb *TextBox) drawCursor() {
 	termbox.SetCursor(
-		tb.X+1+(tb.editTextCursor-tb.showTextStartCursor)%tb.W,
-		tb.Y+1+(tb.editTextCursor-tb.showTextStartCursor)/tb.W,
+		tb.x+1+(tb.editTextCursor-tb.showTextStartCursor)%tb.W,
+		tb.y+1+(tb.editTextCursor-tb.showTextStartCursor)/tb.W,
 	)
 }
