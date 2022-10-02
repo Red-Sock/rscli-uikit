@@ -58,3 +58,19 @@ func SubtractOrMin(startValue, subValue, minValue int) int {
 
 	return minValue
 }
+
+func MaxInt(items ...int) int {
+	var max int
+
+	if len(items) == 0 {
+		return max
+	}
+
+	for _, item := range items {
+		if item > max {
+			max = item
+		}
+	}
+
+	return max
+}

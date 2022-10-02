@@ -59,7 +59,7 @@ func New(callback func(s string) rscliuitkit.UIElement, atrs ...Attribute) *Text
 		tb.pos = &common.AbsolutePositioning{}
 	}
 
-	tb.x, tb.y = tb.pos.GetPosition()
+	tb.positionize()
 
 	return tb
 }
@@ -75,7 +75,7 @@ func (tb *TextBox) Render() {
 }
 
 func (tb *TextBox) Process(e termbox.Event) rscliuitkit.UIElement {
-	tb.x, tb.y = tb.pos.GetPosition()
+	tb.positionize()
 
 	switch e.Key {
 	case termbox.KeyEsc:
@@ -236,4 +236,16 @@ func (tb *TextBox) drawCursor() {
 		tb.x+1+(tb.editTextCursor-tb.showTextStartCursor)%tb.W,
 		tb.y+1+(tb.editTextCursor-tb.showTextStartCursor)/tb.W,
 	)
+}
+
+func (tb *TextBox) positionize() {
+	tb.x, tb.y = tb.pos.GetPosition()
+	w := utils.MaxInt(tb.W, len(tb.textAboveBox), len(tb.rText), len(tb.textBelowBox))
+
+	tb.x -= w / 2
+	tb.y -= 2
+
+	if tb.textAboveBox != "" {
+		tb.y--
+	}
 }
