@@ -40,3 +40,21 @@ func Contains[T comparable](items []T, item T) bool {
 
 	return false
 }
+
+func AddOrMax(startValue, addValue, maxValue int) int {
+	startValue += addValue
+	if startValue < maxValue {
+		return startValue
+	}
+
+	return maxValue
+}
+
+func SubtractOrMin(startValue, subValue, minValue int) int {
+	startValue -= subValue
+	if startValue < minValue {
+		return startValue
+	}
+
+	return minValue
+}

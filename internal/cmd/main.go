@@ -15,6 +15,8 @@ func main() {
 		f,
 		input.TextAbove("choose menu"),
 		input.TextBelow("hello world"),
+
+		input.Expandable(),
 	)
 
 	q := make(chan struct{})

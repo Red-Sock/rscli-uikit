@@ -24,6 +24,10 @@ type TextBox struct {
 
 	lu, ld, ru, rd, vs, hs rune
 
+	isExpandable  bool
+	maxW, minW    int
+	expandingStep int
+
 	callback func(s string) rscliuitkit.UIElement
 }
 
@@ -41,6 +45,8 @@ func New(callback func(s string) rscliuitkit.UIElement, atrs ...Attribute) *Text
 		W:        20,
 		H:        1,
 	}
+	tb.minW, tb.minW = tb.W, tb.W
+
 	for _, a := range atrs {
 		a(tb)
 	}
@@ -95,6 +101,10 @@ func (tb *TextBox) Process(e termbox.Event) rscliuitkit.UIElement {
 }
 
 func (tb *TextBox) InsertRune(r rune) {
+	if tb.isExpandable && tb.W <= len(tb.rText)+1 {
+		tb.W = common.AddOrMax(tb.W, tb.expandingStep, tb.maxW)
+	}
+
 	tb.rText = append(tb.rText, r)
 	if tb.GetScreenSpace() <= len(tb.rText) {
 		tb.showTextStartCursor++
@@ -106,11 +116,16 @@ func (tb *TextBox) DeleteRuneUnderCursor() {
 	if len(tb.rText) == 0 || tb.editTextCursor == 0 {
 		return
 	}
+
 	tb.rText = common.RemoveFromSlice(tb.rText, tb.editTextCursor-1)
 	if tb.showTextStartCursor > 0 {
 		tb.showTextStartCursor--
 	}
 	tb.editTextCursor--
+
+	if tb.isExpandable && tb.W > tb.minW {
+		tb.W = common.SubtractOrMin(tb.W, tb.expandingStep, tb.minW)
+	}
 }
 
 // GetScreenSpace returns amount of runes that can be displayed at TextBox
@@ -157,7 +172,7 @@ func (tb *TextBox) drawBounds() {
 }
 func (tb *TextBox) drawContent() {
 	cursorX, cursorY := tb.X, tb.Y+1
-	text := []rune(tb.rText[tb.showTextStartCursor:])
+	text := tb.rText[tb.showTextStartCursor:]
 
 	for len(text) > 0 {
 		r := text[0]
