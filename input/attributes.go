@@ -80,6 +80,7 @@ func TextBelowColor(fg, bg termbox.Attribute) Attribute {
 func Expandable() Attribute {
 	return func(box *TextBox) {
 		box.isExpandable = true
+		box.maxW = 0
 	}
 }
 func ExpandableMax(value int) Attribute {

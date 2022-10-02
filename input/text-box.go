@@ -33,19 +33,20 @@ type TextBox struct {
 
 func New(callback func(s string) rscliuitkit.UIElement, atrs ...Attribute) *TextBox {
 	tb := &TextBox{
-		callback: callback,
-		fgInput:  termbox.ColorDefault,
-		bgInput:  termbox.ColorDefault,
-		lu:       '┌',
-		ld:       '└',
-		ru:       '┐',
-		rd:       '┘',
-		vs:       '│',
-		hs:       '─',
-		W:        20,
-		H:        1,
+		callback:      callback,
+		fgInput:       termbox.ColorDefault,
+		bgInput:       termbox.ColorDefault,
+		lu:            '┌',
+		ld:            '└',
+		ru:            '┐',
+		rd:            '┘',
+		vs:            '│',
+		hs:            '─',
+		W:             20,
+		H:             1,
+		expandingStep: 1,
 	}
-	tb.minW, tb.minW = tb.W, tb.W
+	tb.maxW, tb.minW = tb.W, tb.W
 
 	for _, a := range atrs {
 		a(tb)
@@ -102,7 +103,12 @@ func (tb *TextBox) Process(e termbox.Event) rscliuitkit.UIElement {
 
 func (tb *TextBox) InsertRune(r rune) {
 	if tb.isExpandable && tb.W <= len(tb.rText)+1 {
-		tb.W = common.AddOrMax(tb.W, tb.expandingStep, tb.maxW)
+		if tb.maxW != 0 {
+			tb.W = common.AddOrMax(tb.W, tb.expandingStep, tb.maxW)
+		} else {
+			w, _ := termbox.Size()
+			tb.W = common.AddOrMax(tb.W, tb.expandingStep, w-2)
+		}
 	}
 
 	tb.rText = append(tb.rText, r)
