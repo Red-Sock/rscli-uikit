@@ -2,7 +2,7 @@ package multiselect
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
-	"github.com/Red-Sock/rscli-uikit/internal/common"
+	"github.com/Red-Sock/rscli-uikit/internal/utils"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
 )
@@ -107,10 +107,10 @@ func (s *Box) Process(e termbox.Event) rscliuitkit.UIElement {
 			}
 			return s.callback(args)
 		}
-		if !common.Contains(s.checkedIdx, s.cursorPos) {
+		if !utils.Contains(s.checkedIdx, s.cursorPos) {
 			s.checkedIdx = append(s.checkedIdx, s.cursorPos)
 		} else {
-			s.checkedIdx = common.RemoveItemFromSlice(s.checkedIdx, s.cursorPos)
+			s.checkedIdx = utils.RemoveItemFromSlice(s.checkedIdx, s.cursorPos)
 		}
 	default:
 	}
@@ -145,7 +145,7 @@ func (s *Box) getColors(idx int) ([]rune, termbox.Attribute, termbox.Attribute) 
 	switch {
 	case idx == s.cursorPos:
 		return s.itemSeparatorUnderCursor, s.cursorFG, s.cursorBG
-	case common.Contains(s.checkedIdx, idx):
+	case utils.Contains(s.checkedIdx, idx):
 		return s.itemSeparatorChecked, s.checkedFG, s.checkedBG
 	default:
 		return s.itemSeparator, s.defaultFG, s.defaultBG
