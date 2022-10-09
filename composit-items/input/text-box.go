@@ -2,8 +2,8 @@ package input
 
 import (
 	"github.com/Red-Sock/rscli-uikit"
-	"github.com/Red-Sock/rscli-uikit/common"
 	"github.com/Red-Sock/rscli-uikit/internal/utils"
+	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
 )

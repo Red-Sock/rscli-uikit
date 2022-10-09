@@ -1,4 +1,4 @@
-package multiselect
+package multi_select
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
@@ -28,7 +28,7 @@ type Box struct {
 
 	defaultBG, defaultFG, // default item background and foreground
 	cursorBG, cursorFG, // currently selected with cursor item
-	checkedBG, checkedFG, // marked item, in case of multiselect
+	checkedBG, checkedFG, // marked item, in case of multi-select
 	headerBG, headerFG,
 	submitBG, submitFG termbox.Attribute
 

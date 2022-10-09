@@ -2,24 +2,24 @@ package main
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
-	"github.com/Red-Sock/rscli-uikit/common"
-	"github.com/Red-Sock/rscli-uikit/label"
-	"github.com/Red-Sock/rscli-uikit/selectone"
+	label2 "github.com/Red-Sock/rscli-uikit/basic/label"
+	selectone2 "github.com/Red-Sock/rscli-uikit/composit-items/radio-select"
+	"github.com/Red-Sock/rscli-uikit/utils/common"
 )
 
 func main() {
 	f := func(text string) rscliuitkit.UIElement {
-		return label.New(text)
+		return label2.New(text)
 	}
 
-	sc := selectone.New(
+	sc := selectone2.New(
 		f,
-		selectone.HeaderLabel(
-			label.New(
+		selectone2.HeaderLabel(
+			label2.New(
 				"some header",
-				label.Position(common.NewRelativePositioning(0.35, 0.35)),
+				label2.Position(common.NewRelativePositioning(0.35, 0.35)),
 			)),
-		selectone.Items("item 1", "item 2", "item 3"),
+		selectone2.Items("item 1", "item 2", "item 3"),
 	)
 
 	//	input.New(

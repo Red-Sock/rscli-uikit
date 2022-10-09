@@ -2,7 +2,7 @@ package label
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
-	"github.com/Red-Sock/rscli-uikit/common"
+	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/nsf/termbox-go"
 )
 

@@ -2,7 +2,7 @@ package label
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
-	"github.com/Red-Sock/rscli-uikit/common"
+	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
 )
@@ -58,21 +58,10 @@ func (t *Label) Process(_ termbox.Event) rscliuitkit.UIElement {
 	return t.next()
 }
 
-func (t *Label) GetStartPoint() (x, y int) {
-	return t.pos.GetPosition()
-}
-func (t *Label) GetEndPoint() (x, y int) {
-	x, y = t.pos.GetPosition()
-	return x + t.w, y + t.h
-}
 func (t *Label) GetSize() (w, h int) {
 	return t.w, t.h
 }
 
-func (t *Label) AddSymbols() {
-
-}
-
-func (t *Label) GetText() string {
-	return t.text
+func (t *Label) SetPosition(p common.Positioner) {
+	t.pos = p
 }

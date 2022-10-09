@@ -1,8 +1,9 @@
-package selectone
+package radio_select
 
 import (
-	"github.com/Red-Sock/rscli-uikit/common"
-	"github.com/Red-Sock/rscli-uikit/label"
+	rscliuitkit "github.com/Red-Sock/rscli-uikit"
+	"github.com/Red-Sock/rscli-uikit/basic/label"
+	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/nsf/termbox-go"
 )
 
@@ -16,7 +17,10 @@ func Position(positioner common.Positioner) Attribute {
 	}
 }
 
-func HeaderLabel(header *label.Label) Attribute {
+// HeaderLabel after select-box has been created,
+// labels takes select-box's position
+// any previous pos is getting overridden
+func HeaderLabel(header rscliuitkit.Labeler) Attribute {
 	return func(sb *Box) {
 		sb.header = header
 	}

@@ -1,4 +1,4 @@
-package multiselect
+package multi_select
 
 import (
 	"github.com/nsf/termbox-go"

@@ -1,9 +1,8 @@
-package selectone
+package radio_select
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
-	"github.com/Red-Sock/rscli-uikit/common"
-	"github.com/Red-Sock/rscli-uikit/label"
+	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
 )
@@ -13,7 +12,7 @@ const (
 )
 
 type Box struct {
-	header *label.Label
+	header rscliuitkit.Labeler
 
 	items         []string
 	itemSeparator rune
@@ -28,7 +27,6 @@ type Box struct {
 }
 
 func New(callback func(args string) rscliuitkit.UIElement, atrs ...Attribute) *Box {
-
 	sb := &Box{
 		callback: callback,
 
@@ -47,10 +45,7 @@ func New(callback func(args string) rscliuitkit.UIElement, atrs ...Attribute) *B
 	}
 
 	if sb.header != nil {
-		sb.header = label.New(
-			sb.header.GetText(),
-			label.Position(sb.pos),
-		)
+		sb.header.SetPosition(sb.pos)
 	}
 
 	return sb
