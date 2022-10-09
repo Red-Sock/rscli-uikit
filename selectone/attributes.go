@@ -1,27 +1,29 @@
 package selectone
 
 import (
+	"github.com/Red-Sock/rscli-uikit/common"
+	"github.com/Red-Sock/rscli-uikit/label"
 	"github.com/nsf/termbox-go"
-	"strings"
 )
 
 type ColorSurface int
 
-const (
-	ColorSurfaceDefault ColorSurface = iota
-	ColorSurfaceUnderCursor
-	ColorSurfaceHeader
-)
-
 type Attribute func(sb *Box)
 
+func Position(positioner common.Positioner) Attribute {
+	return func(sb *Box) {
+		sb.pos = positioner
+	}
+}
+
+func HeaderLabel(header *label.Label) Attribute {
+	return func(sb *Box) {
+		sb.header = header
+	}
+}
 func Header(header string) Attribute {
 	return func(sb *Box) {
-		if !strings.HasSuffix(header, ":") {
-			header += ":"
-		}
-
-		sb.header = header
+		sb.header = label.New(header)
 	}
 }
 
@@ -34,37 +36,21 @@ func Items(items ...string) Attribute {
 
 	}
 }
-
-func X(x int) Attribute {
-	return func(sb *Box) {
-		sb.x = x
-	}
-}
-
-func Y(y int) Attribute {
-	return func(sb *Box) {
-		sb.y = y
-	}
-}
-
-func ColorBG(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
-	return func(sb *Box) {
-		switch type_ {
-		case ColorSurfaceDefault:
-			sb.defaultFG = fg
-			sb.defaultBG = bg
-		case ColorSurfaceUnderCursor:
-			sb.cursorFG = fg
-			sb.cursorBG = bg
-		case ColorSurfaceHeader:
-			sb.headerFG = fg
-			sb.headerBG = bg
-		}
-	}
-}
-
 func SeparatorSymbol(r rune) Attribute {
 	return func(sb *Box) {
 		sb.itemSeparator = r
+	}
+}
+
+func ColorBGCursor(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
+	return func(sb *Box) {
+		sb.cursorFG = fg
+		sb.cursorBG = bg
+	}
+}
+func ColorBGDefault(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
+	return func(sb *Box) {
+		sb.defaultFG = fg
+		sb.defaultBG = bg
 	}
 }
