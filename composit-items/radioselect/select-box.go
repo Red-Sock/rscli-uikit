@@ -1,4 +1,4 @@
-package radio_select
+package radioselect
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
@@ -60,8 +60,6 @@ func (s *Box) Render() {
 		_, h := s.header.GetSize()
 		cursorY += h
 	}
-
-	cursorY += 1
 
 	for idx := range s.items {
 		fg, bg := s.getColors(idx)

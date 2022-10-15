@@ -45,7 +45,12 @@ const (
 // Centered - given coordinates are the center of the text
 // Right - text ends at given coordinates
 func Anchor(at AnchorType) Attribute {
-	return func(box *Label) {
-		box.anchorType = at
+	return func(l *Label) {
+		switch at {
+		case Centered:
+			l.wDelta2 = -0.5
+		case Right:
+			l.wDelta2 = -1
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package radio_select
+package radioselect
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"

@@ -11,7 +11,7 @@ import (
 type TextBox struct {
 	pos common.Positioner
 
-	x, y, H, W int
+	x, y, H, W int // for temporary use between functions only!!! // TODO change render somehow, so this goes away
 
 	// new fields
 	rText []rune
@@ -48,15 +48,12 @@ func New(callback func(s string) rscliuitkit.UIElement, atrs ...Attribute) *Text
 		W:             20,
 		H:             1,
 		expandingStep: 1,
+		pos:           &common.AbsolutePositioning{},
 	}
 	tb.maxW, tb.minW = tb.W, tb.W
 
 	for _, a := range atrs {
 		a(tb)
-	}
-
-	if tb.pos == nil {
-		tb.pos = &common.AbsolutePositioning{}
 	}
 
 	tb.positionize()

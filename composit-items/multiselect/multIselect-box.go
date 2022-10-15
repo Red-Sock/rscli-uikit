@@ -1,8 +1,9 @@
-package multi_select
+package multiselect
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
 	"github.com/Red-Sock/rscli-uikit/internal/utils"
+	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
 )
@@ -12,7 +13,7 @@ const (
 )
 
 type Box struct {
-	header string
+	header rscliuitkit.Labeler
 
 	items                    []string
 	itemSeparator            []rune
@@ -24,11 +25,11 @@ type Box struct {
 	checkedIdx []int
 	cursorPos  int
 
-	x, y int
+	pos common.Positioner
 
 	defaultBG, defaultFG, // default item background and foreground
 	cursorBG, cursorFG, // currently selected with cursor item
-	checkedBG, checkedFG, // marked item, in case of multi-select
+	checkedBG, checkedFG, // marked item, in case of multiselect
 	headerBG, headerFG,
 	submitBG, submitFG termbox.Attribute
 
@@ -68,17 +69,29 @@ func New(
 		sb.submitText = "submit"
 	}
 
+	if sb.pos == nil {
+		sb.pos = &common.AbsolutePositioning{}
+	}
+
+	if sb.header != nil {
+		sb.header.SetPosition(sb.pos)
+	}
+
 	return sb
 }
 
 func (s *Box) Render() {
-	cursorX, cursorY := s.x, s.y
-	for _, r := range s.header {
-		termbox.SetCell(cursorX, cursorY, r, s.headerFG, s.headerBG)
-		cursorX += runewidth.RuneWidth(r)
+	cursorX, cursorY := s.pos.GetPosition()
+
+	if s.header != nil {
+		s.header.Render()
+
+		_, h := s.header.GetSize()
+		cursorY += h
 	}
-	cursorX = s.x
-	cursorY = s.y + 1
+
+	//cursorX = s.x
+	//cursorY = s.y + 1
 
 	for idx := range s.items {
 		separator, fg, bg := s.getColors(idx)

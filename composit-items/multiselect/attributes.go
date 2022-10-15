@@ -1,6 +1,8 @@
-package multi_select
+package multiselect
 
 import (
+	"github.com/Red-Sock/rscli-uikit/basic/label"
+	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/nsf/termbox-go"
 	"strings"
 )
@@ -23,6 +25,12 @@ func Header(header string) Attribute {
 			header += ":"
 		}
 
+		sb.header = label.New(header)
+	}
+}
+
+func HeaderLabel(header *label.Label) Attribute {
+	return func(sb *Box) {
 		sb.header = header
 	}
 }
@@ -34,18 +42,6 @@ func Items(items ...string) Attribute {
 			sb.items[idx] = items[idx]
 		}
 
-	}
-}
-
-func X(x int) Attribute {
-	return func(sb *Box) {
-		sb.x = x
-	}
-}
-
-func Y(y int) Attribute {
-	return func(sb *Box) {
-		sb.y = y
 	}
 }
 
@@ -90,5 +86,11 @@ func SeparatorCheckedCursor(r []rune) Attribute {
 func SubmitText(text string) Attribute {
 	return func(sb *Box) {
 		sb.submitText = text
+	}
+}
+
+func Position(pos common.Positioner) Attribute {
+	return func(sb *Box) {
+		sb.pos = pos
 	}
 }
