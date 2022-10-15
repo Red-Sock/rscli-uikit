@@ -17,10 +17,10 @@ func main() {
 		radioselect.HeaderLabel(
 			label.New(
 				"some header",
-				label.Anchor(label.Right),
+				label.Anchor(label.Left),
 			)),
 		radioselect.Items("item 1", "item 2", "item 3"),
-		radioselect.Position(common.NewRelativePositioning(0.35, 0.35)),
+		radioselect.Position(common.NewRelativePositioning(0.1, 0.1)),
 	)
 
 	//	input.New(

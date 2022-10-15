@@ -27,7 +27,8 @@ type Label struct {
 
 func New(text string, attrs ...Attribute) *Label {
 	l := &Label{
-		h: 1 + strings.Count(text, "\n"),
+		h:   1 + strings.Count(text, "\n"),
+		pos: &common.AbsolutePositioning{},
 	}
 
 	for _, a := range attrs {
