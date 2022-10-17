@@ -77,9 +77,9 @@ func SeparatorUnderCursor(r []rune) Attribute {
 		sb.itemSeparatorUnderCursor = r
 	}
 }
-func SeparatorCheckedCursor(r []rune) Attribute {
+func SeparatorChecked(r []rune) Attribute {
 	return func(sb *Box) {
-		sb.itemSeparatorUnderCursor = r
+		sb.itemSeparatorChecked = r
 	}
 }
 

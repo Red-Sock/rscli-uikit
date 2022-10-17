@@ -64,11 +64,11 @@ func (t *Label) Render() {
 	x, y := t.pos.GetPosition()
 
 	for _, line := range t.lines {
-		x += int(float32(len(line)) * t.wDelta2)
+		currentX := x + int(float32(len(line))*t.wDelta2)
 		for _, c := range line {
 
-			termbox.SetCell(x, y, c, t.fg, t.bg)
-			x += runewidth.RuneWidth(c)
+			termbox.SetCell(currentX, y, c, t.fg, t.bg)
+			currentX += runewidth.RuneWidth(c)
 		}
 		y++
 	}

@@ -58,7 +58,9 @@ func New(
 		submitFG: termbox.ColorDefault,
 		submitBG: termbox.ColorDefault,
 
-		itemSeparator: []rune{defaultSeparator},
+		itemSeparator:            []rune{defaultSeparator},
+		itemSeparatorUnderCursor: []rune{defaultSeparator},
+		itemSeparatorChecked:     []rune{defaultSeparator},
 	}
 
 	for _, a := range atrs {
@@ -89,9 +91,6 @@ func (s *Box) Render() {
 		_, h := s.header.GetSize()
 		cursorY += h
 	}
-
-	//cursorX = s.x
-	//cursorY = s.y + 1
 
 	for idx := range s.items {
 		separator, fg, bg := s.getColors(idx)
@@ -157,6 +156,9 @@ func (s *Box) renderSubmitButton(cursorX, cursorY int) {
 func (s *Box) getColors(idx int) ([]rune, termbox.Attribute, termbox.Attribute) {
 	switch {
 	case idx == s.cursorPos:
+		if utils.Contains(s.checkedIdx, idx) {
+			return s.itemSeparatorChecked, s.cursorFG, s.cursorBG
+		}
 		return s.itemSeparatorUnderCursor, s.cursorFG, s.cursorBG
 	case utils.Contains(s.checkedIdx, idx):
 		return s.itemSeparatorChecked, s.checkedFG, s.checkedBG
