@@ -245,4 +245,11 @@ func (tb *TextBox) positionize() {
 	if tb.textAboveBox != "" {
 		tb.y--
 	}
+
+	if tb.x < 0 {
+		tb.x = 0
+	}
+	if tb.y < 0 {
+		tb.y = 0
+	}
 }
