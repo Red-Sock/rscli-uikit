@@ -2,18 +2,6 @@ package common
 
 import "github.com/nsf/termbox-go"
 
-type Positioner interface {
-	GetPosition() (int, int)
-}
-
-type AbsolutePositioning struct {
-	X, Y int
-}
-
-func (a *AbsolutePositioning) GetPosition() (int, int) {
-	return a.X, a.Y
-}
-
 type RelativePositioning struct {
 	x, y float32
 }
