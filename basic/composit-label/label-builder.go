@@ -1,13 +1,14 @@
-package complelabel
+package composit_label
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
+	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
 )
 
 type ComplexLabel struct {
-	x, y       int
+	pos        common.Positioner
 	text       []TextPart
 	nextScreen rscliuitkit.UIElement
 }
@@ -17,12 +18,20 @@ type TextPart struct {
 	fg, bg termbox.Attribute
 }
 
-func New() *ComplexLabel {
-	return &ComplexLabel{}
+func New(attrs ...Attribute) *ComplexLabel {
+	cl := &ComplexLabel{
+		pos: &common.AbsolutePositioning{},
+	}
+
+	for _, a := range attrs {
+		a(cl)
+	}
+
+	return cl
 }
 
 func (b *ComplexLabel) Render() {
-	cursorX, cursorY := b.x, b.y
+	cursorX, cursorY := b.pos.GetPosition()
 
 	for _, item := range b.text {
 		for _, r := range item.r {

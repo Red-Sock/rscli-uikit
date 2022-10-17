@@ -1,7 +1,8 @@
-package selectone
+package radioselect
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
+	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
 )
@@ -11,30 +12,23 @@ const (
 )
 
 type Box struct {
-	header        string
+	header rscliuitkit.Labeler
+
 	items         []string
 	itemSeparator rune
+	cursorPos     int
 
-	cursorPos int
-
-	x, y int
+	pos common.Positioner
 
 	defaultBG, defaultFG, // default item background and foreground
-	cursorBG, cursorFG, // currently selected with cursor item
-	headerBG, headerFG termbox.Attribute
+	cursorBG, cursorFG termbox.Attribute // currently selected with cursor item
 
 	callback func(args string) rscliuitkit.UIElement
 }
 
-func New(
-	callback func(args string) rscliuitkit.UIElement,
-	atrs ...Attribute) *Box {
-
+func New(callback func(args string) rscliuitkit.UIElement, atrs ...Attribute) *Box {
 	sb := &Box{
 		callback: callback,
-
-		headerFG: termbox.ColorDefault,
-		headerBG: termbox.ColorDarkGray,
 
 		cursorFG: termbox.ColorLightGray,
 		cursorBG: termbox.ColorLightCyan,
@@ -43,23 +37,29 @@ func New(
 		defaultBG: termbox.ColorDefault,
 
 		itemSeparator: defaultSeparator,
+		pos:           &common.AbsolutePositioning{},
 	}
 
 	for _, a := range atrs {
 		a(sb)
 	}
 
+	if sb.header != nil {
+		sb.header.SetPosition(sb.pos)
+	}
+
 	return sb
 }
 
 func (s *Box) Render() {
-	cursorX, cursorY := s.x, s.y
-	for _, r := range s.header {
-		termbox.SetCell(cursorX, cursorY, r, s.headerFG, s.headerBG)
-		cursorX += runewidth.RuneWidth(r)
+	cursorX, cursorY := s.pos.GetPosition()
+
+	if s.header != nil {
+		s.header.Render()
+
+		_, h := s.header.GetSize()
+		cursorY += h
 	}
-	cursorX = s.x
-	cursorY = s.y + 1
 
 	for idx := range s.items {
 		fg, bg := s.getColors(idx)
@@ -75,11 +75,14 @@ func (s *Box) Process(e termbox.Event) rscliuitkit.UIElement {
 			s.cursorPos--
 		}
 	case termbox.KeyArrowDown:
-		if s.cursorPos < len(s.items) {
+		if s.cursorPos < len(s.items)-1 {
 			s.cursorPos++
 		}
 	case termbox.KeyEnter:
 
+		if len(s.items) == 0 {
+			return s.callback("")
+		}
 		return s.callback(s.items[s.cursorPos])
 
 	default:

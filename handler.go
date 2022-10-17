@@ -1,6 +1,7 @@
 package rscliuitkit
 
 import (
+	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/nsf/termbox-go"
 	"log"
 )
@@ -19,6 +20,12 @@ type Handler interface {
 type UIElement interface {
 	Render()
 	Process(e termbox.Event) UIElement
+}
+
+type Labeler interface {
+	UIElement
+	GetSize() (w, h int)
+	SetPosition(p common.Positioner)
 }
 
 type Pixel struct {

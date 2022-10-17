@@ -1,6 +1,8 @@
-package selectone
+package multiselect
 
 import (
+	"github.com/Red-Sock/rscli-uikit/basic/label"
+	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/nsf/termbox-go"
 	"strings"
 )
@@ -10,7 +12,9 @@ type ColorSurface int
 const (
 	ColorSurfaceDefault ColorSurface = iota
 	ColorSurfaceUnderCursor
+	ColorSurfaceChecked
 	ColorSurfaceHeader
+	ColorSurfaceSubmit
 )
 
 type Attribute func(sb *Box)
@@ -21,6 +25,12 @@ func Header(header string) Attribute {
 			header += ":"
 		}
 
+		sb.header = label.New(header)
+	}
+}
+
+func HeaderLabel(header *label.Label) Attribute {
+	return func(sb *Box) {
 		sb.header = header
 	}
 }
@@ -35,18 +45,6 @@ func Items(items ...string) Attribute {
 	}
 }
 
-func X(x int) Attribute {
-	return func(sb *Box) {
-		sb.x = x
-	}
-}
-
-func Y(y int) Attribute {
-	return func(sb *Box) {
-		sb.y = y
-	}
-}
-
 func ColorBG(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
 	return func(sb *Box) {
 		switch type_ {
@@ -56,15 +54,43 @@ func ColorBG(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
 		case ColorSurfaceUnderCursor:
 			sb.cursorFG = fg
 			sb.cursorBG = bg
+		case ColorSurfaceChecked:
+			sb.checkedFG = fg
+			sb.checkedBG = bg
 		case ColorSurfaceHeader:
 			sb.headerFG = fg
 			sb.headerBG = bg
+		case ColorSurfaceSubmit:
+			sb.submitFG = fg
+			sb.submitBG = bg
 		}
 	}
 }
 
-func SeparatorSymbol(r rune) Attribute {
+func SeparatorSymbol(r []rune) Attribute {
 	return func(sb *Box) {
 		sb.itemSeparator = r
+	}
+}
+func SeparatorUnderCursor(r []rune) Attribute {
+	return func(sb *Box) {
+		sb.itemSeparatorUnderCursor = r
+	}
+}
+func SeparatorChecked(r []rune) Attribute {
+	return func(sb *Box) {
+		sb.itemSeparatorChecked = r
+	}
+}
+
+func SubmitText(text string) Attribute {
+	return func(sb *Box) {
+		sb.submitText = text
+	}
+}
+
+func Position(pos common.Positioner) Attribute {
+	return func(sb *Box) {
+		sb.pos = pos
 	}
 }
