@@ -79,6 +79,7 @@ func (tb *TextBox) Process(e termbox.Event) rscliuitkit.UIElement {
 
 	switch e.Key {
 	case termbox.KeyEsc:
+		termbox.HideCursor()
 		return tb.PreviousScreen
 	case termbox.KeyArrowLeft:
 		if tb.editTextCursor > 0 {
@@ -103,6 +104,7 @@ func (tb *TextBox) Process(e termbox.Event) rscliuitkit.UIElement {
 	case termbox.KeySpace:
 		tb.InsertRune(' ')
 	case termbox.KeyEnter:
+		termbox.HideCursor()
 		return tb.callback(string(tb.rText))
 	default:
 		if e.Ch != 0 {
