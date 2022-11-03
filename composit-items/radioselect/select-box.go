@@ -2,6 +2,7 @@ package radioselect
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
+	screenDiscovery "github.com/Red-Sock/rscli-uikit/basic/screen-discovery"
 	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
@@ -12,6 +13,8 @@ const (
 )
 
 type Box struct {
+	screenDiscovery.ScreenDiscovery
+
 	header rscliuitkit.Labeler
 
 	items         []string
@@ -70,6 +73,8 @@ func (s *Box) Render() {
 
 func (s *Box) Process(e termbox.Event) rscliuitkit.UIElement {
 	switch e.Key {
+	case termbox.KeyEsc, termbox.KeyBackspace, termbox.KeyBackspace2:
+		return s.PreviousScreen
 	case termbox.KeyArrowUp:
 		if s.cursorPos > 0 {
 			s.cursorPos--
