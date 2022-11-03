@@ -2,6 +2,7 @@ package multiselect
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
+	screenDiscovery "github.com/Red-Sock/rscli-uikit/basic/screen-discovery"
 	"github.com/Red-Sock/rscli-uikit/internal/utils"
 	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/mattn/go-runewidth"
@@ -13,6 +14,8 @@ const (
 )
 
 type Box struct {
+	screenDiscovery.ScreenDiscovery
+
 	header rscliuitkit.Labeler
 
 	items                    []string

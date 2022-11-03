@@ -2,6 +2,7 @@ package label
 
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
+	screenDiscovery "github.com/Red-Sock/rscli-uikit/basic/screen-discovery"
 	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
@@ -9,6 +10,8 @@ import (
 )
 
 type Label struct {
+	screenDiscovery.ScreenDiscovery
+
 	lines [][]rune
 
 	pos    common.Positioner

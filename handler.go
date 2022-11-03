@@ -20,6 +20,7 @@ type Handler interface {
 type UIElement interface {
 	Render()
 	Process(e termbox.Event) UIElement
+	SetPreviousScreen(element UIElement)
 }
 
 type Labeler interface {
@@ -57,10 +58,12 @@ func (h *handler) Start(q <-chan struct{}) {
 	for {
 		select {
 		case e := <-event:
+			oldScreen := h.activeScreen
 			h.activeScreen = h.activeScreen.Process(e)
 			if h.activeScreen == nil {
 				return
 			}
+			h.activeScreen.SetPreviousScreen(oldScreen)
 			h.draw()
 		case <-q:
 			return

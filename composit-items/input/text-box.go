@@ -2,6 +2,7 @@ package input
 
 import (
 	"github.com/Red-Sock/rscli-uikit"
+	screenDiscovery "github.com/Red-Sock/rscli-uikit/basic/screen-discovery"
 	"github.com/Red-Sock/rscli-uikit/internal/utils"
 	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/mattn/go-runewidth"
@@ -9,9 +10,9 @@ import (
 )
 
 type TextBox struct {
-	pos common.Positioner
+	screenDiscovery.ScreenDiscovery
 
-	x, y, H, W int // for temporary use between functions only!!! // TODO change render somehow, so this goes away
+	pos common.Positioner
 
 	// new fields
 	rText []rune
@@ -32,6 +33,8 @@ type TextBox struct {
 	expandingStep int
 
 	callback func(s string) rscliuitkit.UIElement
+
+	x, y, H, W int // for temporary use between functions only!!! // TODO change render somehow, so this goes away
 }
 
 func New(callback func(s string) rscliuitkit.UIElement, atrs ...Attribute) *TextBox {
@@ -76,7 +79,7 @@ func (tb *TextBox) Process(e termbox.Event) rscliuitkit.UIElement {
 
 	switch e.Key {
 	case termbox.KeyEsc:
-		return nil
+		return tb.PreviousScreen
 	case termbox.KeyArrowLeft:
 		if tb.editTextCursor > 0 {
 			tb.editTextCursor--
