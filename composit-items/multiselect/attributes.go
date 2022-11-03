@@ -101,3 +101,9 @@ func PreviousScreen(element rscliuitkit.UIElement) Attribute {
 		box.PreviousScreen = element
 	}
 }
+
+func Checked(checked []int) Attribute {
+	return func(sb *Box) {
+		sb.checkedIdx = checked
+	}
+}
