@@ -58,3 +58,9 @@ func ColorBGDefault(fg, bg termbox.Attribute, type_ ColorSurface) Attribute {
 		sb.defaultBG = bg
 	}
 }
+
+func PreviousScreen(element rscliuitkit.UIElement) Attribute {
+	return func(box *Box) {
+		box.PreviousScreen = element
+	}
+}

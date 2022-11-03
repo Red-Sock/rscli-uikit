@@ -73,7 +73,7 @@ func (s *Box) Render() {
 
 func (s *Box) Process(e termbox.Event) rscliuitkit.UIElement {
 	switch e.Key {
-	case termbox.KeyEsc:
+	case termbox.KeyEsc, termbox.KeyBackspace, termbox.KeyBackspace2:
 		return s.PreviousScreen
 	case termbox.KeyArrowUp:
 		if s.cursorPos > 0 {

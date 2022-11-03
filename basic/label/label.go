@@ -3,6 +3,7 @@ package label
 import (
 	rscliuitkit "github.com/Red-Sock/rscli-uikit"
 	screenDiscovery "github.com/Red-Sock/rscli-uikit/basic/screen-discovery"
+	"github.com/Red-Sock/rscli-uikit/internal/utils"
 	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
@@ -77,7 +78,10 @@ func (t *Label) Render() {
 	}
 }
 
-func (t *Label) Process(_ termbox.Event) rscliuitkit.UIElement {
+func (t *Label) Process(e termbox.Event) rscliuitkit.UIElement {
+	if utils.Contains([]termbox.Key{termbox.KeyEsc, termbox.KeyBackspace, termbox.KeyBackspace2}, e.Key) {
+		return t.PreviousScreen
+	}
 	if t.next == nil {
 		return nil
 	}

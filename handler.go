@@ -47,6 +47,12 @@ func NewHandler(screen UIElement) Handler {
 
 func (h *handler) Start(q <-chan struct{}) {
 	defer termbox.Close()
+	defer func() {
+		err := termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
+		if err != nil {
+			log.Fatal()
+		}
+	}()
 
 	event := make(chan termbox.Event)
 	go func() {
@@ -63,7 +69,9 @@ func (h *handler) Start(q <-chan struct{}) {
 			if h.activeScreen == nil {
 				return
 			}
-			h.activeScreen.SetPreviousScreen(oldScreen)
+			if h.activeScreen != oldScreen {
+				h.activeScreen.SetPreviousScreen(oldScreen)
+			}
 			h.draw()
 		case <-q:
 			return
