@@ -7,5 +7,10 @@ type ScreenDiscovery struct {
 }
 
 func (sd *ScreenDiscovery) SetPreviousScreen(element rscliuitkit.UIElement) {
+	if sd.PreviousScreen != nil {
+		// Preventing rewriting previous screen, so you can set previous screen
+		// at ui-element logic, and it won't be rewritten by main handler
+		return
+	}
 	sd.PreviousScreen = element
 }

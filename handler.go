@@ -63,7 +63,9 @@ func (h *handler) Start(q <-chan struct{}) {
 			if h.activeScreen == nil {
 				return
 			}
-			h.activeScreen.SetPreviousScreen(oldScreen)
+			if h.activeScreen != oldScreen {
+				h.activeScreen.SetPreviousScreen(oldScreen)
+			}
 			h.draw()
 		case <-q:
 			return

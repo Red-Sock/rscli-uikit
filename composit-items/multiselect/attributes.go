@@ -1,6 +1,7 @@
 package multiselect
 
 import (
+	rscliuitkit "github.com/Red-Sock/rscli-uikit"
 	"github.com/Red-Sock/rscli-uikit/basic/label"
 	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/nsf/termbox-go"
@@ -92,5 +93,11 @@ func SubmitText(text string) Attribute {
 func Position(pos common.Positioner) Attribute {
 	return func(sb *Box) {
 		sb.pos = pos
+	}
+}
+
+func PreviousScreen(element rscliuitkit.UIElement) Attribute {
+	return func(box *Box) {
+		box.PreviousScreen = element
 	}
 }

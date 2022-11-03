@@ -1,6 +1,7 @@
 package input
 
 import (
+	rscliuitkit "github.com/Red-Sock/rscli-uikit"
 	"github.com/Red-Sock/rscli-uikit/utils/common"
 	"github.com/nsf/termbox-go"
 )
@@ -95,5 +96,11 @@ func ExpandableMin(value int) Attribute {
 func ExpandableStep(value int) Attribute {
 	return func(box *TextBox) {
 		box.expandingStep = value
+	}
+}
+
+func PreviousScreen(element rscliuitkit.UIElement) Attribute {
+	return func(box *TextBox) {
+		box.PreviousScreen = element
 	}
 }
