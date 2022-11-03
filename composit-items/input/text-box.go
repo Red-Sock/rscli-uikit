@@ -65,6 +65,8 @@ func New(callback func(s string) rscliuitkit.UIElement, atrs ...Attribute) *Text
 }
 
 func (tb *TextBox) Render() {
+	tb.positionize()
+
 	tb.drawTextAbove()
 
 	tb.drawBounds()
@@ -75,8 +77,6 @@ func (tb *TextBox) Render() {
 }
 
 func (tb *TextBox) Process(e termbox.Event) rscliuitkit.UIElement {
-	tb.positionize()
-
 	switch e.Key {
 	case termbox.KeyEsc:
 		termbox.HideCursor()
@@ -242,9 +242,8 @@ func (tb *TextBox) drawCursor() {
 
 func (tb *TextBox) positionize() {
 	tb.x, tb.y = tb.pos.GetPosition()
-	w := utils.MaxInt(tb.W, len(tb.textAboveBox), len(tb.rText), len(tb.textBelowBox))
 
-	tb.x -= w / 2
+	tb.x -= tb.W / 2
 	tb.y -= 2
 
 	if tb.textAboveBox != "" {
